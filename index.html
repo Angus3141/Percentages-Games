@@ -66,8 +66,8 @@
             <p>Streak: <span id="streak">0</span></p>
         </div>
         <div class="badge" id="badge">
-            <h2>Congratulations <span id="badge-name"></span>!</h2>
-            <p>You answered 10 consecutive questions correctly!</p>
+            <h2>🏆 Congratulations, <span id="badge-name"></span>! 🏆</h2>
+            <p>You achieved the success criteria by correctly answering 10 consecutive questions.</p>
             <button onclick="restartGame()">Play Again</button>
         </div>
     </div>
@@ -104,9 +104,7 @@
                 document.getElementById("streak").innerText = correctStreak;
 
                 if (correctStreak === 10) {
-                    document.getElementById("game-content").style.display = "none";
-                    document.getElementById("badge").style.display = "block";
-                    document.getElementById("badge-name").innerText = studentName;
+                    displayBadge();
                 } else {
                     generateQuestion();
                 }
@@ -115,6 +113,12 @@
                 document.getElementById("streak").innerText = correctStreak;
                 document.getElementById("feedback").innerText = "Incorrect. Try again!";
             }
+        }
+
+        function displayBadge() {
+            document.getElementById("game-content").style.display = "none";
+            document.getElementById("badge").style.display = "block";
+            document.getElementById("badge-name").innerText = studentName;
         }
 
         function restartGame() {
