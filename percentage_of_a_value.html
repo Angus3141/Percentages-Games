@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Percentage of a Value</title>
     <style>
-        /* [Same styles as before, omitted for brevity] */
+        /* [Styles remain the same as before] */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -159,17 +159,15 @@
                 return;
             }
 
-            // Round both userAnswer and correctAnswer to two decimal places for comparison
-            const roundedUserAnswer = Math.round(userAnswer * 100) / 100;
-            const roundedCorrectAnswer = Math.round(correctAnswer * 100) / 100;
-
-            if (roundedUserAnswer === roundedCorrectAnswer) {
+            // Allow a small tolerance for floating-point errors
+            const tolerance = 0.01;
+            if (Math.abs(userAnswer - correctAnswer) <= tolerance) {
                 correctStreak++;
                 document.getElementById("feedback").innerText = "Correct!";
                 document.getElementById("feedback").className = "feedback correct";
                 document.getElementById("streak").innerText = correctStreak;
 
-                if (correctStreak === 1) {
+                if (correctStreak === 10) {
                     displayBadge();
                 } else {
                     generateQuestion();
