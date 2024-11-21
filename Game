@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage to Decimal Game</title>
+    <style>
+        .game-container {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+        input[type="text"], button {
+            font-size: 16px;
+            margin: 10px;
+            padding: 10px;
+        }
+        .badge {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div id="name-prompt">
+            <p>Enter your name:</p>
+            <input type="text" id="student-name" placeholder="Your Name">
+            <button onclick="startGame()">Start</button>
+        </div>
+        <div id="game-content" style="display: none;">
+            <p id="question"></p>
+            <input type="text" id="answer" placeholder="Your answer">
+            <button onclick="submitAnswer()">Submit</button>
+            <p id="feedback"></p>
+            <p>Streak: <span id="streak">0</span></p>
+        </div>
+        <div class="badge" id="badge">
+            <h2>Congratulations <span id="badge-name"></span>!</h2>
+            <p>You completed the game!</p>
+            <button onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+    <script>
+        let studentName = "";
+        let currentQuestion = 0;
+        let correctStreak = 0;
+
+        function startGame() {
+            studentName = document.getElementById("student-name").value.trim();
+            if (!studentName) {
+                alert("Enter your name to start.");
+                return;
+            }
+            document.getElementById("name-prompt").style.display = "none";
+            document.getElementById("game-content").style.display = "block";
+            generateQuestion();
+        }
+
+        function generateQuestion() {
+            currentQuestion = Math.floor(Math.random() * 101); // Random percentage 0–100
+            document.getElementById("question").innerText = `Convert ${currentQuestion}% to a decimal:`;
+            document.getElementById("answer").value = ""; // Clear previous input
+            document.getElementById("feedback").innerText = ""; // Clear previous feedback
+        }
+
+        function submitAnswer() {
+            const userAnswer = parseFloat(document.getElementById("answer").value.trim());
+            const correctAnswer = currentQuestion / 100;
+
+            if (userAnswer === correctAnswer) {
+                correctStreak++;
+                document.getElementById("feedback").innerText = "Correct!";
+                document.getElementById("streak").innerText = correctStreak;
+
+                if (correctStreak === 10) {
+                    document.getElementById("game-content").style.display = "none";
+                    document.getElementById("badge").style.display = "block";
+                    document.getElementById("badge-name").innerText = studentName;
+                } else {
+                    generateQuestion();
+                }
+            } else {
+                correctStreak = 0;
+                document.getElementById("streak").innerText = correctStreak;
+                document.getElementById("feedback").innerText = "Incorrect. Try again!";
+            }
+        }
+
+        function restartGame() {
+            correctStreak = 0;
+            document.getElementById("streak").innerText = correctStreak;
+            document.getElementById("badge").style.display = "none";
+            document.getElementById("game-content").style.display = "block";
+            generateQuestion();
+        }
+    </script>
+</body>
+</html>
