@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decimal to Percentage Game</title>
+    <title>Convert Decimals to Percentages Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -55,50 +55,66 @@
             padding: 20px;
             border-radius: 10px;
         }
-        .feedback {
+        #feedback {
+            font-weight: bold;
             margin-top: 10px;
-            font-size: 16px;
         }
-        .feedback.correct {
+        .positive {
             color: #28a745;
         }
-        .feedback.incorrect {
+        .negative {
             color: #dc3545;
         }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <div class="header">Convert Decimals to Percentages</div>
-        <p id="question"></p>
-        <input type="text" id="answer" placeholder="Your answer">
-        <button onclick="submitAnswer()">Submit</button>
-        <p id="feedback" class="feedback"></p>
-        <p>Streak: <span id="streak">0</span></p>
-        <div class="badge" id="badge">
-            <h2>🏆 Congratulations! 🏆</h2>
-            <p>You successfully completed the challenge!</p>
+        <div class="header">Convert Decimals to Percentages Game</div>
+        <p>Please enter your name:</p>
+        <input type="text" id="studentName" placeholder="Your Name">
+        <button onclick="startGame()">Start Game</button>
+        <div id="game" style="display: none;">
+            <p id="question"></p>
+            <input type="text" id="answer" placeholder="Your answer">
+            <button onclick="submitAnswer()">Submit</button>
+            <p id="feedback"></p>
+            <p>Streak: <span id="streak">0</span></p>
+            <div class="badge" id="badge">
+                <h2>🏆 Congratulations, <span id="studentBadgeName"></span>! 🏆</h2>
+                <p>You successfully completed the challenge!</p>
+            </div>
         </div>
     </div>
     <script>
-        let currentDecimal = 0;
+        let currentQuestion = 0;
         let correctStreak = 0;
+        let studentName = "";
+
+        function startGame() {
+            studentName = document.getElementById("studentName").value.trim();
+            if (!studentName) {
+                alert("Please enter your name to start the game!");
+                return;
+            }
+            document.getElementById("game").style.display = "block";
+            document.getElementById("studentName").style.display = "none";
+            document.querySelector("button").style.display = "none";
+            generateQuestion();
+        }
 
         function generateQuestion() {
-            currentDecimal = (Math.random() * 0.9 + 0.1).toFixed(2); // Generate a decimal between 0.1 and 1.0
-            document.getElementById("question").innerText = `Convert ${currentDecimal} to a percentage:`;
-            document.getElementById("answer").value = ""; // Clear the input field
-            document.getElementById("feedback").innerText = ""; // Clear feedback
+            currentQuestion = (Math.random() * 10).toFixed(2);
+            document.getElementById("question").innerText = `Convert ${currentQuestion} to a percentage:`;
         }
 
         function submitAnswer() {
             const userAnswer = parseFloat(document.getElementById("answer").value.trim());
-            const correctAnswer = (currentDecimal * 100).toFixed(2); // Convert decimal to percentage
+            const correctAnswer = (currentQuestion * 100).toFixed(2);
 
-            if (userAnswer == correctAnswer) {
+            if (userAnswer === parseFloat(correctAnswer)) {
                 correctStreak++;
                 document.getElementById("feedback").innerText = "Correct!";
-                document.getElementById("feedback").className = "feedback correct";
+                document.getElementById("feedback").className = "positive";
                 document.getElementById("streak").innerText = correctStreak;
 
                 if (correctStreak === 10) {
@@ -108,18 +124,16 @@
                 }
             } else {
                 correctStreak = 0;
-                document.getElementById("feedback").innerText = `Incorrect. The correct answer is ${correctAnswer}%.`;
-                document.getElementById("feedback").className = "feedback incorrect";
+                document.getElementById("feedback").innerText = "Incorrect. Try again!";
+                document.getElementById("feedback").className = "negative";
                 document.getElementById("streak").innerText = correctStreak;
             }
         }
 
         function displayBadge() {
             document.getElementById("badge").style.display = "block";
+            document.getElementById("studentBadgeName").innerText = studentName;
         }
-
-        // Start the first question
-        generateQuestion();
     </script>
 </body>
 </html>
