@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Percentage of a Value</title>
     <style>
+        /* [Same styles as before, omitted for brevity] */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -71,11 +71,12 @@
         <div class="header">Calculating Percentage of a Value</div>
         <p id="name-prompt">Enter your name to start:</p>
         <input type="text" id="student-name" placeholder="Your name">
-        <button onclick="startGame()">Start Game</button>
+        <button id="start-button">Start Game</button>
         
         <div id="game-area" style="display:none;">
             <p id="question"></p>
             <input type="text" id="answer" placeholder="Your answer">
+            <button id="submit-button">Submit</button>
             <p id="feedback" class="feedback"></p>
             <p>Current Streak: <span id="streak">0</span> / 10</p>
             <div class="badge" id="badge">
@@ -101,6 +102,9 @@
             { question: "Calculate the stamp duty (7%) on a $500,000 house purchase.", value: 500000, percentage: 7 },
         ];
 
+        // Event listener for Start Game button
+        document.getElementById("start-button").addEventListener("click", startGame);
+
         function startGame() {
             const name = document.getElementById("student-name").value.trim();
             if (!name) {
@@ -109,17 +113,21 @@
             }
             document.getElementById("name-prompt").style.display = "none";
             document.getElementById("student-name").style.display = "none";
-            document.querySelector(".game-container button").style.display = "none";
+            document.getElementById("start-button").style.display = "none";
             document.getElementById("game-area").style.display = "block";
             document.getElementById("student-name-badge").innerText = name;
             generateQuestion();
 
+            // Event listener for Enter key in the answer input field
             document.getElementById("answer").addEventListener("keypress", function(event) {
                 if (event.key === "Enter") {
                     event.preventDefault();
                     submitAnswer();
                 }
             });
+
+            // Event listener for Submit button
+            document.getElementById("submit-button").addEventListener("click", submitAnswer);
         }
 
         function generateQuestion() {
@@ -137,13 +145,25 @@
             document.getElementById("question").innerText = currentQuestion.question;
             document.getElementById("feedback").innerText = "";
             document.getElementById("feedback").className = "feedback";
+            document.getElementById("answer").value = "";
+            document.getElementById("answer").focus();
         }
 
         function submitAnswer() {
             const userAnswer = parseFloat(document.getElementById("answer").value.trim());
             const correctAnswer = (currentQuestion.value * currentQuestion.percentage) / 100;
 
-            if (userAnswer === correctAnswer) {
+            if (isNaN(userAnswer)) {
+                document.getElementById("feedback").innerText = "Please enter a valid number.";
+                document.getElementById("feedback").className = "feedback incorrect";
+                return;
+            }
+
+            // Round both userAnswer and correctAnswer to two decimal places for comparison
+            const roundedUserAnswer = Math.round(userAnswer * 100) / 100;
+            const roundedCorrectAnswer = Math.round(correctAnswer * 100) / 100;
+
+            if (roundedUserAnswer === roundedCorrectAnswer) {
                 correctStreak++;
                 document.getElementById("feedback").innerText = "Correct!";
                 document.getElementById("feedback").className = "feedback correct";
@@ -152,7 +172,6 @@
                 if (correctStreak === 10) {
                     displayBadge();
                 } else {
-                    document.getElementById("answer").value = "";
                     generateQuestion();
                 }
             } else {
@@ -160,7 +179,6 @@
                 document.getElementById("feedback").innerText = `Incorrect. Remember, to find ${currentQuestion.percentage}% of $${currentQuestion.value}, multiply ${currentQuestion.value} by ${currentQuestion.percentage}/100. Try again!`;
                 document.getElementById("feedback").className = "feedback incorrect";
                 document.getElementById("streak").innerText = correctStreak;
-                document.getElementById("answer").value = "";
             }
         }
 
