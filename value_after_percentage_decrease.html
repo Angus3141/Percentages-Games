@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Value After Percentage Decrease</title>
+    <title>Calculating Value After Percentage Decrease</title>
     <style>
+        /* Styles remain largely the same */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -54,6 +54,8 @@
             background-color: #ffeb3b;
             padding: 20px;
             border-radius: 10px;
+            text-align: center;
+            color: #000;
         }
         .feedback {
             margin: 10px 0;
@@ -71,17 +73,22 @@
         <div class="header">Value After Percentage Decrease</div>
         <p id="name-prompt">Enter your name to start:</p>
         <input type="text" id="student-name" placeholder="Your name">
-        <button onclick="startGame()">Start Game</button>
+        <button id="start-button">Start Game</button>
         
         <div id="game-area" style="display:none;">
             <p id="question"></p>
             <input type="text" id="answer" placeholder="Your answer">
+            <button id="submit-button">Submit</button>
             <p id="feedback" class="feedback"></p>
             <p>Current Streak: <span id="streak">0</span> / 10</p>
-            <div class="badge" id="badge">
-                <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
-                <p>You achieved a 10-question winning streak!</p>
-            </div>
+        </div>
+
+        <!-- Moved the badge div outside of game-area -->
+        <div class="badge" id="badge">
+            <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
+            <p>You achieved a 10-question winning streak!</p>
+            <!-- Optional Restart Button -->
+            <button id="restart-button">Play Again</button>
         </div>
     </div>
     <script>
@@ -89,38 +96,40 @@
         let correctStreak = 0;
         let usedQuestions = [];
         const questions = [
-{ question: "A $100 item decreases by 25%. What is the new value?", originalValue: 100, percentageDecrease: 25 },
-{ question: "A car costing $20,000 decreased by 10%. What is the new price?", originalValue: 20000, percentageDecrease: 10 },
-{ question: "Your rent was $1,800 and decreased by 5%. What is the new amount?", originalValue: 1800, percentageDecrease: 5 },
-{ question: "A $50 jacket's price decreased by 20%. What is the new price?", originalValue: 50, percentageDecrease: 20 },
-{ question: "A $1,200 laptop price decreased by 15%. What is the new price?", originalValue: 1200, percentageDecrease: 15 },
-{ question: "A $500 item decreased by 8%. What is the new price?", originalValue: 500, percentageDecrease: 8 },
-{ question: "A $40 gym membership fee decreased by 25%. What is the new fee?", originalValue: 40, percentageDecrease: 25 },
-{ question: "A $15 movie ticket decreased by 10%. What is the new price?", originalValue: 15, percentageDecrease: 10 },
-{ question: "A $900 holiday package decreased by 12%. What is the new price?", originalValue: 900, percentageDecrease: 12 },
-{ question: "A $60 dinner bill decreased by 18%. What is the new amount?", originalValue: 60, percentageDecrease: 18 },
-{ question: "A train ticket costing $3.00 decreased by 20%. What is the new price?", originalValue: 3.00, percentageDecrease: 20 },
-{ question: "A water bill of $100 decreased by 12%. What is the new bill?", originalValue: 100, percentageDecrease: 12 },
-{ question: "A $700 flight ticket decreased by 15%. What is the new price?", originalValue: 700, percentageDecrease: 15 },
-{ question: "A $35 haircut decreased by 10%. What is the new cost?", originalValue: 35, percentageDecrease: 10 },
-{ question: "An internet bill of $80 decreased by 8%. What is the new amount?", originalValue: 80, percentageDecrease: 8 },
-{ question: "A $25 concert ticket decreased by 5%. What is the new price?", originalValue: 25, percentageDecrease: 5 },
-{ question: "The price of fuel was $1.50 per liter and decreased by 5%. What is the new price?", originalValue: 1.50, percentageDecrease: 5 },
-{ question: "A $400 bicycle decreased by 10%. What is the new cost?", originalValue: 400, percentageDecrease: 10 },
-{ question: "A $45 jacket decreased by 20%. What is the new price?", originalValue: 45, percentageDecrease: 20 },
-{ question: "The price of a $2,500 sofa decreased by 12%. What is the new price?", originalValue: 2500, percentageDecrease: 12 },
-{ question: "A $12 sandwich decreased by 15%. What is the new price?", originalValue: 12, percentageDecrease: 15 },
-{ question: "A $700 TV decreased by 18%. What is the new price?", originalValue: 700, percentageDecrease: 18 },
-{ question: "A $20 monthly magazine subscription decreased by 10%. What is the new cost?", originalValue: 20, percentageDecrease: 10 },
-{ question: "A $2,000 vacation package decreased by 6%. What is the new price?", originalValue: 2000, percentageDecrease: 6 },
-{ question: "A health insurance premium of $300 decreased by 8%. What is the new premium?", originalValue: 300, percentageDecrease: 8 },
-{ question: "A $60 electricity bill decreased by 5%. What is the new bill?", originalValue: 60, percentageDecrease: 5 },
-{ question: "A $3,000 property tax decreased by 10%. What is the new cost?", originalValue: 3000, percentageDecrease: 10 },
-{ question: "A $15 parking fee decreased by 20%. What is the new price?", originalValue: 15, percentageDecrease: 20 },
-{ question: "The cost of a $500 smartphone decreased by 12%. What is the new price?", originalValue: 500, percentageDecrease: 12 },
-{ question: "A $1,500 annual gym membership decreased by 8%. What is the new cost?", originalValue: 1500, percentageDecrease: 8 },
-
+            { question: "A $100 item decreases by 25%. What is the new value?", originalValue: 100, percentageDecrease: 25 },
+            { question: "A car costing $20,000 decreased by 10%. What is the new price?", originalValue: 20000, percentageDecrease: 10 },
+            { question: "Your rent was $1,800 and decreased by 5%. What is the new amount?", originalValue: 1800, percentageDecrease: 5 },
+            { question: "A $50 jacket's price decreased by 20%. What is the new price?", originalValue: 50, percentageDecrease: 20 },
+            { question: "A $1,200 laptop price decreased by 15%. What is the new price?", originalValue: 1200, percentageDecrease: 15 },
+            { question: "A $500 item decreased by 8%. What is the new price?", originalValue: 500, percentageDecrease: 8 },
+            { question: "A $40 gym membership fee decreased by 25%. What is the new fee?", originalValue: 40, percentageDecrease: 25 },
+            { question: "A $15 movie ticket decreased by 10%. What is the new price?", originalValue: 15, percentageDecrease: 10 },
+            { question: "A $900 holiday package decreased by 12%. What is the new price?", originalValue: 900, percentageDecrease: 12 },
+            { question: "A $60 dinner bill decreased by 18%. What is the new amount?", originalValue: 60, percentageDecrease: 18 },
+            { question: "A train ticket costing $3.00 decreased by 20%. What is the new price?", originalValue: 3.00, percentageDecrease: 20 },
+            { question: "A water bill of $100 decreased by 12%. What is the new bill?", originalValue: 100, percentageDecrease: 12 },
+            { question: "A $700 flight ticket decreased by 15%. What is the new price?", originalValue: 700, percentageDecrease: 15 },
+            { question: "A $35 haircut decreased by 10%. What is the new cost?", originalValue: 35, percentageDecrease: 10 },
+            { question: "An internet bill of $80 decreased by 8%. What is the new amount?", originalValue: 80, percentageDecrease: 8 },
+            { question: "A $25 concert ticket decreased by 5%. What is the new price?", originalValue: 25, percentageDecrease: 5 },
+            { question: "The price of fuel was $1.50 per liter and decreased by 5%. What is the new price?", originalValue: 1.50, percentageDecrease: 5 },
+            { question: "A $400 bicycle decreased by 10%. What is the new cost?", originalValue: 400, percentageDecrease: 10 },
+            { question: "A $45 jacket decreased by 20%. What is the new price?", originalValue: 45, percentageDecrease: 20 },
+            { question: "The price of a $2,500 sofa decreased by 12%. What is the new price?", originalValue: 2500, percentageDecrease: 12 },
+            { question: "A $12 sandwich decreased by 15%. What is the new price?", originalValue: 12, percentageDecrease: 15 },
+            { question: "A $700 TV decreased by 18%. What is the new price?", originalValue: 700, percentageDecrease: 18 },
+            { question: "A $20 monthly magazine subscription decreased by 10%. What is the new cost?", originalValue: 20, percentageDecrease: 10 },
+            { question: "A $2,000 vacation package decreased by 6%. What is the new price?", originalValue: 2000, percentageDecrease: 6 },
+            { question: "A health insurance premium of $300 decreased by 8%. What is the new premium?", originalValue: 300, percentageDecrease: 8 },
+            { question: "A $60 electricity bill decreased by 5%. What is the new bill?", originalValue: 60, percentageDecrease: 5 },
+            { question: "A $3,000 property tax decreased by 10%. What is the new cost?", originalValue: 3000, percentageDecrease: 10 },
+            { question: "A $15 parking fee decreased by 20%. What is the new price?", originalValue: 15, percentageDecrease: 20 },
+            { question: "The cost of a $500 smartphone decreased by 12%. What is the new price?", originalValue: 500, percentageDecrease: 12 },
+            { question: "A $1,500 annual gym membership decreased by 8%. What is the new cost?", originalValue: 1500, percentageDecrease: 8 },
         ];
+
+        // Event listener for Start Game button
+        document.getElementById("start-button").addEventListener("click", startGame);
 
         function startGame() {
             const name = document.getElementById("student-name").value.trim();
@@ -130,16 +139,29 @@
             }
             document.getElementById("name-prompt").style.display = "none";
             document.getElementById("student-name").style.display = "none";
-            document.querySelector(".game-container button").style.display = "none";
+            document.getElementById("start-button").style.display = "none";
             document.getElementById("game-area").style.display = "block";
             document.getElementById("student-name-badge").innerText = name;
             generateQuestion();
 
+            // Event listener for Enter key in the answer input field
             document.getElementById("answer").addEventListener("keypress", function(event) {
                 if (event.key === "Enter") {
                     event.preventDefault();
                     submitAnswer();
                 }
+            });
+
+            // Event listener for Submit button
+            document.getElementById("submit-button").addEventListener("click", submitAnswer);
+
+            // Event listener for Restart button (optional)
+            document.getElementById("restart-button").addEventListener("click", function() {
+                correctStreak = 0;
+                document.getElementById("streak").innerText = correctStreak;
+                document.getElementById("badge").style.display = "none";
+                document.getElementById("game-area").style.display = "block";
+                generateQuestion();
             });
         }
 
@@ -156,13 +178,25 @@
             usedQuestions.push(randomIndex);
             currentQuestion = questions[randomIndex];
             document.getElementById("question").innerText = currentQuestion.question;
+            document.getElementById("feedback").innerText = "";
+            document.getElementById("feedback").className = "feedback";
+            document.getElementById("answer").value = "";
+            document.getElementById("answer").focus();
         }
 
         function submitAnswer() {
             const userAnswer = parseFloat(document.getElementById("answer").value.trim());
             const correctAnswer = currentQuestion.originalValue * (1 - currentQuestion.percentageDecrease / 100);
 
-            if (Math.abs(userAnswer - correctAnswer) < 0.01) { // Allowing a small margin of error
+            if (isNaN(userAnswer)) {
+                document.getElementById("feedback").innerText = "Please enter a valid number.";
+                document.getElementById("feedback").className = "feedback incorrect";
+                return;
+            }
+
+            // Allow a small tolerance for floating-point errors
+            const tolerance = 0.01;
+            if (Math.abs(userAnswer - correctAnswer) <= tolerance) {
                 correctStreak++;
                 document.getElementById("feedback").innerText = "Correct!";
                 document.getElementById("feedback").className = "feedback correct";
@@ -175,11 +209,12 @@
                 }
             } else {
                 correctStreak = 0;
-                document.getElementById("feedback").innerText = "Incorrect. Try again!";
+                document.getElementById("feedback").innerText = `Incorrect. Remember, to calculate the new value after a percentage decrease, multiply the original value by (1 - percentage decrease ÷ 100). For example: ${currentQuestion.originalValue} × (1 - ${currentQuestion.percentageDecrease}/100). Try again!`;
                 document.getElementById("feedback").className = "feedback incorrect";
                 document.getElementById("streak").innerText = correctStreak;
+                document.getElementById("answer").value = "";
+                document.getElementById("answer").focus();
             }
-            document.getElementById("answer").value = "";
         }
 
         function displayBadge() {
