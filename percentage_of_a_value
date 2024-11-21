@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Challenge - Australian Context</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+        }
+        .game-container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 0;
+            font-size: 20px;
+            border-radius: 8px 8px 0 0;
+        }
+        input[type="text"], button {
+            font-size: 16px;
+            margin: 10px;
+            padding: 10px;
+            width: calc(100% - 20px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .badge {
+            display: none;
+            margin-top: 20px;
+            background-color: #ffeb3b;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .feedback {
+            margin: 10px 0;
+        }
+        .feedback.correct {
+            color: #28a745;
+        }
+        .feedback.incorrect {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">Australian Percentage Challenge</div>
+        <p id="name-prompt">Enter your name to start:</p>
+        <input type="text" id="student-name" placeholder="Your name">
+        <button onclick="startGame()">Start Game</button>
+        
+        <div id="game-area" style="display:none;">
+            <p id="question"></p>
+            <input type="text" id="answer" placeholder="Your answer">
+            <button onclick="submitAnswer()">Submit</button>
+            <p id="feedback" class="feedback"></p>
+            <p>Streak: <span id="streak">0</span></p>
+            <div class="badge" id="badge">
+                <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
+                <p>You successfully completed the challenge!</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentQuestion = {};
+        let correctStreak = 0;
+        const questions = [
+            { question: "What is 10% of a $500 grocery bill?", value: 500, percentage: 10 },
+            { question: "A $1,200 car service has a 15% discount. How much is the discount?", value: 1200, percentage: 15 },
+            { question: "Calculate the GST (10%) on a $1,000 item.", value: 1000, percentage: 10 },
+            { question: "What is 25% of a $2,000 laptop?", value: 2000, percentage: 25 },
+            { question: "You earned $300 in interest. How much is 20% of this amount?", value: 300, percentage: 20 },
+            { question: "An item costs $80. A sale gives 50% off. What is the discount?", value: 80, percentage: 50 },
+            { question: "Calculate 5% of a $1,500 electricity bill.", value: 1500, percentage: 5 },
+            { question: "A $2,500 holiday package has a 30% discount. How much is the discount?", value: 2500, percentage: 30 },
+            { question: "What is 18% of a $600 health insurance premium?", value: 600, percentage: 18 },
+            { question: "Calculate the stamp duty (7%) on a $500,000 house purchase.", value: 500000, percentage: 7 },
+        ];
+
+        function startGame() {
+            const name = document.getElementById("student-name").value.trim();
+            if (!name) {
+                alert("Please enter your name to start.");
+                return;
+            }
+            document.getElementById("name-prompt").style.display = "none";
+            document.getElementById("student-name").style.display = "none";
+            document.querySelector(".game-container button").style.display = "none";
+            document.getElementById("game-area").style.display = "block";
+            document.getElementById("student-name-badge").innerText = name;
+            generateQuestion();
+        }
+
+        function generateQuestion() {
+            const randomIndex = Math.floor(Math.random() * questions.length);
+            currentQuestion = questions[randomIndex];
+            document.getElementById("question").innerText = currentQuestion.question;
+        }
+
+        function submitAnswer() {
+            const userAnswer = parseFloat(document.getElementById("answer").value.trim());
+            const correctAnswer = (currentQuestion.value * currentQuestion.percentage) / 100;
+
+            if (userAnswer === correctAnswer) {
+                correctStreak++;
+                document.getElementById("feedback").innerText = "Correct!";
+                document.getElementById("feedback").className = "feedback correct";
+                document.getElementById("streak").innerText = correctStreak;
+
+                if (correctStreak === 10) {
+                    displayBadge();
+                } else {
+                    generateQuestion();
+                }
+            } else {
+                correctStreak = 0;
+                document.getElementById("feedback").innerText = "Incorrect. Try again!";
+                document.getElementById("feedback").className = "feedback incorrect";
+                document.getElementById("streak").innerText = correctStreak;
+            }
+            document.getElementById("answer").value = "";
+        }
+
+        function displayBadge() {
+            document.getElementById("badge").style.display = "block";
+            document.getElementById("game-area").style.display = "none";
+        }
+    </script>
+</body>
+</html>
