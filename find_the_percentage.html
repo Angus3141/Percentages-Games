@@ -94,16 +94,27 @@
         let correctStreak = 0;
         let usedQuestions = [];
         const questions = [
-            { question: "What percentage is $50 of $500?", part: 50, whole: 500 },
-            { question: "What percentage is $10 of $450?", part: 10, whole: 450 },
-            { question: "A $25 donation was made to a $1,000 fundraiser. What percentage is this?", part: 25, whole: 1000 },
-            { question: "You spent $120 on a $600 phone. What percentage is this?", part: 120, whole: 600 },
-            { question: "Calculate what percentage $200 is of a $1,200 vacation package.", part: 200, whole: 1200 },
-            { question: "Your rent is $1,800, and your salary is $6,000. What percentage is your rent?", part: 1800, whole: 6000 },
-            { question: "What percentage is a $300 deposit of a $15,000 home purchase?", part: 300, whole: 15000 },
-            { question: "You saved $100 from a $2,000 salary. What percentage is this?", part: 100, whole: 2000 },
-            { question: "A $15 tip was given for a $200 meal. What percentage is this?", part: 15, whole: 200 },
-            { question: "You read 45 pages of a 300-page book. What percentage is this?", part: 45, whole: 300 },
+{ question: "You scored 85 points out of a possible 100 on a test. What percentage is this?", part: 85, whole: 100 },
+{ question: "A $150 payment was made on a $1,500 loan. What percentage is this?", part: 150, whole: 1500 },
+{ question: "You drank 2 liters of water from a 10-liter container. What percentage have you consumed?", part: 2, whole: 10 },
+{ question: "An employee worked 35 hours out of a 40-hour workweek. What percentage of the week did they work?", part: 35, whole: 40 },
+{ question: "You completed 75 out of 300 survey responses. What percentage is this?", part: 75, whole: 300 },
+{ question: "A car traveled 120 miles out of a 600-mile journey. What percentage of the journey is completed?", part: 120, whole: 600 },
+{ question: "You used 250 MB of your 2 GB data plan. What percentage of your data have you used?", part: 250, whole: 2000 },
+{ question: "You have $400 saved towards a goal of $2,000. What percentage of your goal have you saved?", part: 400, whole: 2000 },
+{ question: "A factory produced 500 defective items out of 50,000 total items. What percentage is defective?", part: 500, whole: 50000 },
+{ question: "You spent $30 out of your $200 budget. What percentage have you spent?", part: 30, whole: 200 },
+{ question: "A student answered 18 questions correctly out of 20. What percentage did they get right?", part: 18, whole: 20 },
+{ question: "An athlete ran 5 km of a 42 km marathon. What percentage of the marathon have they completed?", part: 5, whole: 42 },
+{ question: "You have read 150 pages of a 600-page book. What percentage have you read?", part: 150, whole: 600 },
+{ question: "A company sold 2,000 units out of 10,000 units in stock. What percentage have they sold?", part: 2000, whole: 10000 },
+{ question: "You have completed 7 out of 14 tasks on your to-do list. What percentage is complete?", part: 7, whole: 14 },
+{ question: "A battery has 25% charge remaining out of 100%. What percentage has been used?", part: 75, whole: 100 },
+{ question: "You paid $500 of your $2,500 credit card debt. What percentage have you paid off?", part: 500, whole: 2500 },
+{ question: "A store sold 80 out of 400 items on sale. What percentage is this?", part: 80, whole: 400 },
+{ question: "You walked 3 miles out of a planned 15-mile hike. What percentage have you completed?", part: 3, whole: 15 },
+{ question: "An investor owns 5,000 shares out of 100,000 total shares. What percentage do they own?", part: 5000, whole: 100000 },
+
         ];
 
         // Event listener for Start Game button
