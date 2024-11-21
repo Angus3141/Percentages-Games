@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage Increase Challenge</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+        }
+        .game-container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 0;
+            font-size: 20px;
+            border-radius: 8px 8px 0 0;
+        }
+        input[type="text"], button {
+            font-size: 16px;
+            margin: 10px;
+            padding: 10px;
+            width: calc(100% - 20px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .badge {
+            display: none;
+            margin-top: 20px;
+            background-color: #ffeb3b;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .feedback {
+            margin: 10px 0;
+        }
+        .feedback.correct {
+            color: #28a745;
+        }
+        .feedback.incorrect {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">Percentage Increase Challenge</div>
+        <p id="name-prompt">Enter your name to start:</p>
+        <input type="text" id="student-name" placeholder="Your name">
+        <button onclick="startGame()">Start Game</button>
+        
+        <div id="game-area" style="display:none;">
+            <p id="question"></p>
+            <input type="text" id="answer" placeholder="Your answer">
+            <p id="feedback" class="feedback"></p>
+            <p>Current Streak: <span id="streak">0</span> / 10</p>
+            <div class="badge" id="badge">
+                <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
+                <p>You achieved a 10-question winning streak!</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentQuestion = {};
+        let correctStreak = 0;
+        let usedQuestions = [];
+        const questions = [
+           { question: "An item was $50 and is now $75. What is the percentage increase?", oldValue: 50, newValue: 75 },
+{ question: "A car's price increased from $20,000 to $25,000. What is the percentage increase?", oldValue: 20000, newValue: 25000 },
+{ question: "Rent increased from $1,500 to $1,800. What is the percentage increase?", oldValue: 1500, newValue: 1800 },
+{ question: "A monthly subscription was $30 and is now $45. What is the percentage increase?", oldValue: 30, newValue: 45 },
+{ question: "Electricity bills rose from $120 to $180. What is the percentage increase?", oldValue: 120, newValue: 180 },
+{ question: "A laptop price went from $900 to $1,200. What is the percentage increase?", oldValue: 900, newValue: 1200 },
+{ question: "A house was valued at $400,000 and is now $500,000. What is the percentage increase?", oldValue: 400000, newValue: 500000 },
+{ question: "A $60 jacket now costs $75. What is the percentage increase?", oldValue: 60, newValue: 75 },
+{ question: "A gym membership increased from $50 to $65. What is the percentage increase?", oldValue: 50, newValue: 65 },
+{ question: "A movie ticket price rose from $15 to $20. What is the percentage increase?", oldValue: 15, newValue: 20 },
+{ question: "A bag of groceries increased in price from $120 to $150. What is the percentage increase?", oldValue: 120, newValue: 150 },
+{ question: "A school fee increased from $3,500 to $4,000. What is the percentage increase?", oldValue: 3500, newValue: 4000 },
+{ question: "A health insurance premium rose from $200 to $260. What is the percentage increase?", oldValue: 200, newValue: 260 },
+{ question: "Your internet bill increased from $80 to $100. What is the percentage increase?", oldValue: 80, newValue: 100 },
+{ question: "The price of fuel rose from $1.50 per liter to $1.80 per liter. What is the percentage increase?", oldValue: 1.50, newValue: 1.80 },
+{ question: "A train ticket increased from $2.50 to $3.00. What is the percentage increase?", oldValue: 2.50, newValue: 3.00 },
+{ question: "A TV's price increased from $1,200 to $1,500. What is the percentage increase?", oldValue: 1200, newValue: 1500 },
+{ question: "A cleaning service rose in price from $75 to $100. What is the percentage increase?", oldValue: 75, newValue: 100 },
+{ question: "A holiday package went up from $3,000 to $4,000. What is the percentage increase?", oldValue: 3000, newValue: 4000 },
+{ question: "A water bill increased from $100 to $120. What is the percentage increase?", oldValue: 100, newValue: 120 },
+{ question: "A concert ticket price rose from $80 to $120. What is the percentage increase?", oldValue: 80, newValue: 120 },
+{ question: "The price of a book rose from $20 to $25. What is the percentage increase?", oldValue: 20, newValue: 25 },
+{ question: "An online course fee increased from $150 to $200. What is the percentage increase?", oldValue: 150, newValue: 200 },
+{ question: "A parking fine increased from $50 to $75. What is the percentage increase?", oldValue: 50, newValue: 75 },
+{ question: "A hotel room rate rose from $120 to $180. What is the percentage increase?", oldValue: 120, newValue: 180 },
+{ question: "The price of a smartphone increased from $800 to $1,000. What is the percentage increase?", oldValue: 800, newValue: 1000 },
+{ question: "A concert's VIP ticket increased from $250 to $400. What is the percentage increase?", oldValue: 250, newValue: 400 },
+{ question: "A membership fee increased from $40 to $60. What is the percentage increase?", oldValue: 40, newValue: 60 },
+{ question: "A bike rental price increased from $20 to $30. What is the percentage increase?", oldValue: 20, newValue: 30 },
+{ question: "The price of a software license rose from $500 to $750. What is the percentage increase?", oldValue: 500, newValue: 750 },
+
+        ];
+
+        function startGame() {
+            const name = document.getElementById("student-name").value.trim();
+            if (!name) {
+                alert("Please enter your name to start.");
+                return;
+            }
+            document.getElementById("name-prompt").style.display = "none";
+            document.getElementById("student-name").style.display = "none";
+            document.querySelector(".game-container button").style.display = "none";
+            document.getElementById("game-area").style.display = "block";
+            document.getElementById("student-name-badge").innerText = name;
+            generateQuestion();
+
+            document.getElementById("answer").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    submitAnswer();
+                }
+            });
+        }
+
+        function generateQuestion() {
+            if (usedQuestions.length === questions.length) {
+                usedQuestions = [];
+            }
+
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * questions.length);
+            } while (usedQuestions.includes(randomIndex));
+
+            usedQuestions.push(randomIndex);
+            currentQuestion = questions[randomIndex];
+            document.getElementById("question").innerText = currentQuestion.question;
+        }
+
+        function submitAnswer() {
+            const userAnswer = parseFloat(document.getElementById("answer").value.trim());
+            const correctAnswer = ((currentQuestion.newValue - currentQuestion.oldValue) / currentQuestion.oldValue) * 100;
+
+            if (Math.abs(userAnswer - correctAnswer) < 0.01) { // Allowing a small margin of error
+                correctStreak++;
+                document.getElementById("feedback").innerText = "Correct!";
+                document.getElementById("feedback").className = "feedback correct";
+                document.getElementById("streak").innerText = correctStreak;
+
+                if (correctStreak === 10) {
+                    displayBadge();
+                } else {
+                    generateQuestion();
+                }
+            } else {
+                correctStreak = 0;
+                document.getElementById("feedback").innerText = "Incorrect. Try again!";
+                document.getElementById("feedback").className = "feedback incorrect";
+                document.getElementById("streak").innerText = correctStreak;
+            }
+            document.getElementById("answer").value = "";
+        }
+
+        function displayBadge() {
+            document.getElementById("badge").style.display = "block";
+            document.getElementById("game-area").style.display = "none";
+        }
+    </script>
+</body>
+</html>
