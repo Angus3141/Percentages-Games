@@ -54,6 +54,8 @@
             background-color: #ffeb3b;
             padding: 20px;
             border-radius: 10px;
+            text-align: center;
+            color: #000;
         }
         .feedback {
             margin: 10px 0;
@@ -79,10 +81,12 @@
             <button id="submit-button">Submit</button>
             <p id="feedback" class="feedback"></p>
             <p>Current Streak: <span id="streak">0</span> / 10</p>
-            <div class="badge" id="badge">
-                <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
-                <p>You correctly found a percentage of a value 10 times consecutively.</p>
-            </div>
+        </div>
+
+        <!-- Move the badge div outside of game-area -->
+        <div class="badge" id="badge">
+            <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
+            <p>You correctly found a percentage of a value 10 times consecutively.</p>
         </div>
     </div>
     <script>
