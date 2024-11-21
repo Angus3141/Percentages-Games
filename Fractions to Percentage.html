@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fraction to Percentage Game</title>
+    <title>Convert Fractions to Percentages Game</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,16 +48,6 @@
         button:hover {
             background-color: #0056b3;
         }
-        .feedback {
-            font-size: 16px;
-            margin-top: 10px;
-        }
-        .feedback.correct {
-            color: #28a745;
-        }
-        .feedback.incorrect {
-            color: #dc3545;
-        }
         .badge {
             display: none;
             margin-top: 20px;
@@ -65,62 +55,68 @@
             padding: 20px;
             border-radius: 10px;
         }
+        #feedback {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .positive {
+            color: #28a745;
+        }
+        .negative {
+            color: #dc3545;
+        }
     </style>
 </head>
 <body>
     <div class="game-container">
-        <div class="header">Fraction to Percentage Game</div>
-        <p id="welcome">Enter your name:</p>
-        <input type="text" id="studentName" placeholder="Your name">
+        <div class="header">Convert Fractions to Percentages Game</div>
+        <p>Please enter your name:</p>
+        <input type="text" id="studentName" placeholder="Your Name">
         <button onclick="startGame()">Start Game</button>
-        
         <div id="game" style="display: none;">
             <p id="question"></p>
             <input type="text" id="answer" placeholder="Your answer">
             <button onclick="submitAnswer()">Submit</button>
-            <p id="feedback" class="feedback"></p>
+            <p id="feedback"></p>
             <p>Streak: <span id="streak">0</span></p>
             <div class="badge" id="badge">
-                <h2>🏆 Congratulations, <span id="nameBadge"></span>! 🏆</h2>
+                <h2>🏆 Congratulations, <span id="studentBadgeName"></span>! 🏆</h2>
                 <p>You successfully completed the challenge!</p>
             </div>
         </div>
     </div>
     <script>
-        let currentNumerator = 0;
-        let currentDenominator = 0;
+        let numerator = 0;
+        let denominator = 0;
         let correctStreak = 0;
-        let studentName = '';
+        let studentName = "";
 
         function startGame() {
             studentName = document.getElementById("studentName").value.trim();
-            if (studentName === '') {
-                alert('Please enter your name to start the game.');
+            if (!studentName) {
+                alert("Please enter your name to start the game!");
                 return;
             }
-            document.getElementById("welcome").style.display = 'none';
-            document.getElementById("studentName").style.display = 'none';
-            document.querySelector("button").style.display = 'none';
-            document.getElementById("game").style.display = 'block';
+            document.getElementById("game").style.display = "block";
+            document.getElementById("studentName").style.display = "none";
+            document.querySelector("button").style.display = "none";
             generateQuestion();
         }
 
         function generateQuestion() {
-            currentNumerator = Math.floor(Math.random() * 10) + 1; // 1 to 10
-            currentDenominator = Math.floor(Math.random() * 10) + 1; // 1 to 10
-            document.getElementById("question").innerHTML = `Convert <sup>${currentNumerator}</sup>&frasl;<sub>${currentDenominator}</sub> to a percentage:`;
-            document.getElementById("answer").value = '';
-            document.getElementById("feedback").innerText = '';
+            numerator = Math.floor(Math.random() * 50) + 1; // Random numerator between 1 and 50
+            denominator = Math.floor(Math.random() * 50) + 1; // Random denominator between 1 and 50
+            document.getElementById("question").innerText = `Convert ${numerator}/${denominator} to a percentage:`;
         }
 
         function submitAnswer() {
             const userAnswer = parseFloat(document.getElementById("answer").value.trim());
-            const correctAnswer = (currentNumerator / currentDenominator) * 100;
+            const correctAnswer = ((numerator / denominator) * 100).toFixed(2);
 
-            if (Math.abs(userAnswer - correctAnswer) < 0.01) { // Allow minor precision errors
+            if (userAnswer === parseFloat(correctAnswer)) {
                 correctStreak++;
                 document.getElementById("feedback").innerText = "Correct!";
-                document.getElementById("feedback").className = "feedback correct";
+                document.getElementById("feedback").className = "positive";
                 document.getElementById("streak").innerText = correctStreak;
 
                 if (correctStreak === 10) {
@@ -131,14 +127,14 @@
             } else {
                 correctStreak = 0;
                 document.getElementById("feedback").innerText = "Incorrect. Try again!";
-                document.getElementById("feedback").className = "feedback incorrect";
+                document.getElementById("feedback").className = "negative";
                 document.getElementById("streak").innerText = correctStreak;
             }
         }
 
         function displayBadge() {
             document.getElementById("badge").style.display = "block";
-            document.getElementById("nameBadge").innerText = studentName;
+            document.getElementById("studentBadgeName").innerText = studentName;
         }
     </script>
 </body>
