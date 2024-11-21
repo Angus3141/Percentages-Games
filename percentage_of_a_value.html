@@ -78,20 +78,20 @@
             <input type="text" id="answer" placeholder="Your answer">
             <button onclick="submitAnswer()">Submit</button>
             <p id="feedback" class="feedback"></p>
-            <p>Streak: <span id="streak">0</span></p>
+            <p>Questions Answered Correctly: <span id="score">0</span> / 30</p>
             <div class="badge" id="badge">
                 <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
-                <p>You successfully completed the challenge!</p>
+                <p>You successfully answered all the questions!</p>
             </div>
         </div>
     </div>
     <script>
-        let currentQuestion = {};
-        let correctStreak = 0;
+        let correctScore = 0;
+        let usedQuestions = [];
         const questions = [
             { question: "What is 10% of a $500 grocery bill?", value: 500, percentage: 10 },
             { question: "A $1,200 car service has a 15% discount. How much is the discount?", value: 1200, percentage: 15 },
-            { question: "Calculate the GST (10%) on a $1,000 item.", value: 1000, percentage: 10 },
+            { question: "Calculate the GST (10%) on a $1,000 purchase.", value: 1000, percentage: 10 },
             { question: "What is 25% of a $2,000 laptop?", value: 2000, percentage: 25 },
             { question: "You earned $300 in interest. How much is 20% of this amount?", value: 300, percentage: 20 },
             { question: "An item costs $80. A sale gives 50% off. What is the discount?", value: 80, percentage: 50 },
@@ -99,6 +99,26 @@
             { question: "A $2,500 holiday package has a 30% discount. How much is the discount?", value: 2500, percentage: 30 },
             { question: "What is 18% of a $600 health insurance premium?", value: 600, percentage: 18 },
             { question: "Calculate the stamp duty (7%) on a $500,000 house purchase.", value: 500000, percentage: 7 },
+            { question: "A $3,000 car repair invoice includes a 12% surcharge. How much is the surcharge?", value: 3000, percentage: 12 },
+            { question: "A $1,200 insurance policy has a 10% loyalty discount. What is the discount?", value: 1200, percentage: 10 },
+            { question: "You received a $2,000 bonus. How much is 15% of the bonus?", value: 2000, percentage: 15 },
+            { question: "A phone bill of $80 has an additional 5% late fee. How much is the late fee?", value: 80, percentage: 5 },
+            { question: "A furniture item costs $1,800. What is 20% off?", value: 1800, percentage: 20 },
+            { question: "Calculate 12% of a $4,500 monthly salary.", value: 4500, percentage: 12 },
+            { question: "A $750 bill is discounted by 8%. How much is the discount?", value: 750, percentage: 8 },
+            { question: "What is 40% of a $500 electronics purchase?", value: 500, percentage: 40 },
+            { question: "A holiday package costing $6,000 is on sale for 25% off. What is the discount?", value: 6000, percentage: 25 },
+            { question: "You spent $2,400 on rent. How much is 10% of your rent?", value: 2400, percentage: 10 },
+            { question: "Calculate the interest (5%) on a $20,000 home loan.", value: 20000, percentage: 5 },
+            { question: "A $120 pair of shoes has a 15% discount. What is the discount?", value: 120, percentage: 15 },
+            { question: "What is 35% of a $3,500 holiday budget?", value: 3500, percentage: 35 },
+            { question: "A $25,000 car purchase includes GST of 10%. What is the GST?", value: 25000, percentage: 10 },
+            { question: "Calculate the council rate surcharge (7%) on a $1,800 property rate.", value: 1800, percentage: 7 },
+            { question: "A $40,000 car loan charges an additional 2% processing fee. How much is the fee?", value: 40000, percentage: 2 },
+            { question: "What is 12% of a $3,200 annual insurance premium?", value: 3200, percentage: 12 },
+            { question: "Calculate 9% of a $12,000 annual education expense.", value: 12000, percentage: 9 },
+            { question: "A $1,500 vacation package has a 35% early-bird discount. How much is the discount?", value: 1500, percentage: 35 },
+            { question: "A medical bill of $400 has an added 6% tax. How much is the tax?", value: 400, percentage: 6 },
         ];
 
         function startGame() {
@@ -116,7 +136,17 @@
         }
 
         function generateQuestion() {
-            const randomIndex = Math.floor(Math.random() * questions.length);
+            if (usedQuestions.length === questions.length) {
+                displayBadge();
+                return;
+            }
+
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * questions.length);
+            } while (usedQuestions.includes(randomIndex));
+
+            usedQuestions.push(randomIndex);
             currentQuestion = questions[randomIndex];
             document.getElementById("question").innerText = currentQuestion.question;
         }
@@ -126,21 +156,14 @@
             const correctAnswer = (currentQuestion.value * currentQuestion.percentage) / 100;
 
             if (userAnswer === correctAnswer) {
-                correctStreak++;
+                correctScore++;
                 document.getElementById("feedback").innerText = "Correct!";
                 document.getElementById("feedback").className = "feedback correct";
-                document.getElementById("streak").innerText = correctStreak;
-
-                if (correctStreak === 10) {
-                    displayBadge();
-                } else {
-                    generateQuestion();
-                }
+                document.getElementById("score").innerText = correctScore;
+                generateQuestion();
             } else {
-                correctStreak = 0;
                 document.getElementById("feedback").innerText = "Incorrect. Try again!";
                 document.getElementById("feedback").className = "feedback incorrect";
-                document.getElementById("streak").innerText = correctStreak;
             }
             document.getElementById("answer").value = "";
         }
