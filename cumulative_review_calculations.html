@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cumulative Math Review</title>
     <style>
+        /* CSS styles remain largely the same */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -12,7 +12,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             background-color: #f0f8ff;
         }
         .game-container {
@@ -54,6 +54,8 @@
             background-color: #ffeb3b;
             padding: 20px;
             border-radius: 10px;
+            text-align: center;
+            color: #000;
         }
         .feedback {
             margin: 10px 0;
@@ -71,22 +73,28 @@
         <div class="header">Cumulative Math Review</div>
         <p id="name-prompt">Enter your name to start:</p>
         <input type="text" id="student-name" placeholder="Your name">
-        <button onclick="startGame()">Start Game</button>
+        <button id="start-button">Start Game</button>
         
         <div id="game-area" style="display:none;">
             <p id="question"></p>
             <input type="text" id="answer" placeholder="Your answer">
+            <button id="submit-button">Submit</button>
             <p id="feedback" class="feedback"></p>
             <p>Current Streak: <span id="streak">0</span> / 20</p>
-            <div class="badge" id="badge">
-                <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
-                <p>You successfully completed the cumulative review with 20 questions in a row correct!</p>
-            </div>
+        </div>
+
+        <!-- Moved the badge div outside of game-area -->
+        <div class="badge" id="badge">
+            <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
+            <p>You successfully completed the cumulative review with 20 questions in a row correct!</p>
+            <!-- Optional Restart Button -->
+            <button id="restart-button">Play Again</button>
         </div>
     </div>
     <script>
         let currentQuestion = {};
         let correctStreak = 0;
+        let usedQuestions = [];
 
         const allQuestions = [
             // Percentage of a value
@@ -98,21 +106,24 @@
             { question: "What percentage is $30 of $150?", type: "percentageOfAnother", part: 30, whole: 150 },
 
             // Percentage increase
-            { question: "A $100 item increased by 20%. What is the new price?", type: "percentageIncrease", originalValue: 100, percentage: 20 },
-            { question: "A $900 laptop increased by 10%. What is the new price?", type: "percentageIncrease", originalValue: 900, percentage: 10 },
+            { question: "A $100 item increased by 20%. What is the increase amount?", type: "percentageIncrease", originalValue: 100, percentage: 20 },
+            { question: "A $900 laptop increased by 10%. What is the increase amount?", type: "percentageIncrease", originalValue: 900, percentage: 10 },
 
             // Percentage decrease
-            { question: "A $1,200 holiday decreased by 15%. What is the new price?", type: "percentageDecrease", originalValue: 1200, percentage: 15 },
-            { question: "A $75 jacket decreased by 20%. What is the new price?", type: "percentageDecrease", originalValue: 75, percentage: 20 },
+            { question: "A $1,200 holiday decreased by 15%. What is the decrease amount?", type: "percentageDecrease", originalValue: 1200, percentage: 15 },
+            { question: "A $75 jacket decreased by 20%. What is the decrease amount?", type: "percentageDecrease", originalValue: 75, percentage: 20 },
 
             // Value after percentage increase
-            { question: "A $200 fee increased by 25%. What is the new amount?", type: "valueAfterIncrease", originalValue: 200, percentageIncrease: 25 },
-            { question: "A $40 ticket increased by 15%. What is the total price?", type: "valueAfterIncrease", originalValue: 40, percentageIncrease: 15 },
+            { question: "A $200 fee increased by 25%. What is the new amount?", type: "valueAfterIncrease", originalValue: 200, percentage: 25 },
+            { question: "A $40 ticket increased by 15%. What is the total price?", type: "valueAfterIncrease", originalValue: 40, percentage: 15 },
 
             // Value after percentage decrease
-            { question: "A $300 bill decreased by 10%. What is the total amount?", type: "valueAfterDecrease", originalValue: 300, percentageDecrease: 10 },
-            { question: "A $500 item decreased by 8%. What is the new price?", type: "valueAfterDecrease", originalValue: 500, percentageDecrease: 8 },
+            { question: "A $300 bill decreased by 10%. What is the new amount?", type: "valueAfterDecrease", originalValue: 300, percentage: 10 },
+            { question: "A $500 item decreased by 8%. What is the new price?", type: "valueAfterDecrease", originalValue: 500, percentage: 8 },
         ];
+
+        // Event listener for Start Game button
+        document.getElementById("start-button").addEventListener("click", startGame);
 
         function startGame() {
             const name = document.getElementById("student-name").value.trim();
@@ -122,28 +133,60 @@
             }
             document.getElementById("name-prompt").style.display = "none";
             document.getElementById("student-name").style.display = "none";
-            document.querySelector(".game-container button").style.display = "none";
+            document.getElementById("start-button").style.display = "none";
             document.getElementById("game-area").style.display = "block";
             document.getElementById("student-name-badge").innerText = name;
             generateQuestion();
 
+            // Event listener for Enter key in the answer input field
             document.getElementById("answer").addEventListener("keypress", function(event) {
                 if (event.key === "Enter") {
                     event.preventDefault();
                     submitAnswer();
                 }
             });
+
+            // Event listener for Submit button
+            document.getElementById("submit-button").addEventListener("click", submitAnswer);
+
+            // Event listener for Restart button (optional)
+            document.getElementById("restart-button").addEventListener("click", function() {
+                correctStreak = 0;
+                document.getElementById("streak").innerText = correctStreak;
+                document.getElementById("badge").style.display = "none";
+                document.getElementById("game-area").style.display = "block";
+                generateQuestion();
+            });
         }
 
         function generateQuestion() {
-            const randomIndex = Math.floor(Math.random() * allQuestions.length);
+            if (usedQuestions.length === allQuestions.length) {
+                usedQuestions = [];
+            }
+
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * allQuestions.length);
+            } while (usedQuestions.includes(randomIndex));
+
+            usedQuestions.push(randomIndex);
             currentQuestion = allQuestions[randomIndex];
             document.getElementById("question").innerText = currentQuestion.question;
+            document.getElementById("feedback").innerText = "";
+            document.getElementById("feedback").className = "feedback";
+            document.getElementById("answer").value = "";
+            document.getElementById("answer").focus();
         }
 
         function submitAnswer() {
             const userAnswer = parseFloat(document.getElementById("answer").value.trim());
             let correctAnswer;
+
+            if (isNaN(userAnswer)) {
+                document.getElementById("feedback").innerText = "Please enter a valid number.";
+                document.getElementById("feedback").className = "feedback incorrect";
+                return;
+            }
 
             switch (currentQuestion.type) {
                 case "percentageOfValue":
@@ -153,20 +196,21 @@
                     correctAnswer = (currentQuestion.part / currentQuestion.whole) * 100;
                     break;
                 case "percentageIncrease":
-                    correctAnswer = currentQuestion.originalValue * (1 + currentQuestion.percentage / 100);
+                    correctAnswer = currentQuestion.originalValue * (currentQuestion.percentage / 100);
                     break;
                 case "percentageDecrease":
-                    correctAnswer = currentQuestion.originalValue * (1 - currentQuestion.percentage / 100);
+                    correctAnswer = currentQuestion.originalValue * (currentQuestion.percentage / 100);
                     break;
                 case "valueAfterIncrease":
-                    correctAnswer = currentQuestion.originalValue * (1 + currentQuestion.percentageIncrease / 100);
+                    correctAnswer = currentQuestion.originalValue * (1 + currentQuestion.percentage / 100);
                     break;
                 case "valueAfterDecrease":
-                    correctAnswer = currentQuestion.originalValue * (1 - currentQuestion.percentageDecrease / 100);
+                    correctAnswer = currentQuestion.originalValue * (1 - currentQuestion.percentage / 100);
                     break;
             }
 
-            if (Math.abs(userAnswer - correctAnswer) < 0.01) { // Allowing a small margin of error
+            const tolerance = 0.01;
+            if (Math.abs(userAnswer - correctAnswer) <= tolerance) {
                 correctStreak++;
                 document.getElementById("feedback").innerText = "Correct!";
                 document.getElementById("feedback").className = "feedback correct";
@@ -179,11 +223,29 @@
                 }
             } else {
                 correctStreak = 0;
-                document.getElementById("feedback").innerText = "Incorrect. Try again!";
+                document.getElementById("feedback").innerText = getFeedback();
                 document.getElementById("feedback").className = "feedback incorrect";
                 document.getElementById("streak").innerText = correctStreak;
+                document.getElementById("answer").value = "";
+                document.getElementById("answer").focus();
             }
-            document.getElementById("answer").value = "";
+        }
+
+        function getFeedback() {
+            switch (currentQuestion.type) {
+                case "percentageOfValue":
+                    return `Incorrect. To find a percentage of a value, multiply the value by the percentage divided by 100. For example: ${currentQuestion.value} × (${currentQuestion.percentage} ÷ 100). Try again!`;
+                case "percentageOfAnother":
+                    return `Incorrect. To find what percentage one number is of another, divide the part by the whole and multiply by 100. For example: (${currentQuestion.part} ÷ ${currentQuestion.whole}) × 100. Try again!`;
+                case "percentageIncrease":
+                    return `Incorrect. To find the increase amount, multiply the original value by the percentage increase divided by 100. For example: ${currentQuestion.originalValue} × (${currentQuestion.percentage} ÷ 100). Try again!`;
+                case "percentageDecrease":
+                    return `Incorrect. To find the decrease amount, multiply the original value by the percentage decrease divided by 100. For example: ${currentQuestion.originalValue} × (${currentQuestion.percentage} ÷ 100). Try again!`;
+                case "valueAfterIncrease":
+                    return `Incorrect. To find the new value after an increase, multiply the original value by (1 + percentage increase ÷ 100). For example: ${currentQuestion.originalValue} × (1 + ${currentQuestion.percentage} ÷ 100). Try again!`;
+                case "valueAfterDecrease":
+                    return `Incorrect. To find the new value after a decrease, multiply the original value by (1 - percentage decrease ÷ 100). For example: ${currentQuestion.originalValue} × (1 - ${currentQuestion.percentage} ÷ 100). Try again!`;
+            }
         }
 
         function displayBadge() {
