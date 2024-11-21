@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Percentage Decrease Challenge</title>
+    <title>Calculate Percentage Decrease</title>
     <style>
+        /* Styles remain largely the same */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -54,6 +54,8 @@
             background-color: #ffeb3b;
             padding: 20px;
             border-radius: 10px;
+            text-align: center;
+            color: #000;
         }
         .feedback {
             margin: 10px 0;
@@ -71,17 +73,22 @@
         <div class="header">Percentage Decrease Challenge</div>
         <p id="name-prompt">Enter your name to start:</p>
         <input type="text" id="student-name" placeholder="Your name">
-        <button onclick="startGame()">Start Game</button>
+        <button id="start-button">Start Game</button>
         
         <div id="game-area" style="display:none;">
             <p id="question"></p>
             <input type="text" id="answer" placeholder="Your answer">
+            <button id="submit-button">Submit</button>
             <p id="feedback" class="feedback"></p>
             <p>Current Streak: <span id="streak">0</span> / 10</p>
-            <div class="badge" id="badge">
-                <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
-                <p>You achieved a 10-question winning streak!</p>
-            </div>
+        </div>
+
+        <!-- Moved the badge div outside of game-area -->
+        <div class="badge" id="badge">
+            <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
+            <p>You achieved a 10-question winning streak!</p>
+            <!-- Optional Restart Button -->
+            <button id="restart-button">Play Again</button>
         </div>
     </div>
     <script>
@@ -101,6 +108,9 @@
             { question: "A movie ticket price fell from $20 to $15. What is the percentage decrease?", oldValue: 20, newValue: 15 },
         ];
 
+        // Event listener for Start Game button
+        document.getElementById("start-button").addEventListener("click", startGame);
+
         function startGame() {
             const name = document.getElementById("student-name").value.trim();
             if (!name) {
@@ -109,16 +119,29 @@
             }
             document.getElementById("name-prompt").style.display = "none";
             document.getElementById("student-name").style.display = "none";
-            document.querySelector(".game-container button").style.display = "none";
+            document.getElementById("start-button").style.display = "none";
             document.getElementById("game-area").style.display = "block";
             document.getElementById("student-name-badge").innerText = name;
             generateQuestion();
 
+            // Event listener for Enter key in the answer input field
             document.getElementById("answer").addEventListener("keypress", function(event) {
                 if (event.key === "Enter") {
                     event.preventDefault();
                     submitAnswer();
                 }
+            });
+
+            // Event listener for Submit button
+            document.getElementById("submit-button").addEventListener("click", submitAnswer);
+
+            // Event listener for Restart button (optional)
+            document.getElementById("restart-button").addEventListener("click", function() {
+                correctStreak = 0;
+                document.getElementById("streak").innerText = correctStreak;
+                document.getElementById("badge").style.display = "none";
+                document.getElementById("game-area").style.display = "block";
+                generateQuestion();
             });
         }
 
@@ -135,13 +158,25 @@
             usedQuestions.push(randomIndex);
             currentQuestion = questions[randomIndex];
             document.getElementById("question").innerText = currentQuestion.question;
+            document.getElementById("feedback").innerText = "";
+            document.getElementById("feedback").className = "feedback";
+            document.getElementById("answer").value = "";
+            document.getElementById("answer").focus();
         }
 
         function submitAnswer() {
             const userAnswer = parseFloat(document.getElementById("answer").value.trim());
             const correctAnswer = ((currentQuestion.oldValue - currentQuestion.newValue) / currentQuestion.oldValue) * 100;
 
-            if (Math.abs(userAnswer - correctAnswer) < 0.01) { // Allowing a small margin of error
+            if (isNaN(userAnswer)) {
+                document.getElementById("feedback").innerText = "Please enter a valid number.";
+                document.getElementById("feedback").className = "feedback incorrect";
+                return;
+            }
+
+            // Allow a small tolerance for floating-point errors
+            const tolerance = 0.01;
+            if (Math.abs(userAnswer - correctAnswer) <= tolerance) {
                 correctStreak++;
                 document.getElementById("feedback").innerText = "Correct!";
                 document.getElementById("feedback").className = "feedback correct";
@@ -154,11 +189,12 @@
                 }
             } else {
                 correctStreak = 0;
-                document.getElementById("feedback").innerText = "Incorrect. Try again!";
+                document.getElementById("feedback").innerText = `Incorrect. Remember, to calculate the percentage decrease, subtract the new value from the old value, divide by the old value, and then multiply by 100. For example: ((${currentQuestion.oldValue} - ${currentQuestion.newValue}) / ${currentQuestion.oldValue}) * 100. Try again!`;
                 document.getElementById("feedback").className = "feedback incorrect";
                 document.getElementById("streak").innerText = correctStreak;
+                document.getElementById("answer").value = "";
+                document.getElementById("answer").focus();
             }
-            document.getElementById("answer").value = "";
         }
 
         function displayBadge() {
