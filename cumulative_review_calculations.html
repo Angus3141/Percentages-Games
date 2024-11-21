@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cumulative Math Review</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+        }
+        .game-container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 0;
+            font-size: 20px;
+            border-radius: 8px 8px 0 0;
+        }
+        input[type="text"], button {
+            font-size: 16px;
+            margin: 10px;
+            padding: 10px;
+            width: calc(100% - 20px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .badge {
+            display: none;
+            margin-top: 20px;
+            background-color: #ffeb3b;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        .feedback {
+            margin: 10px 0;
+        }
+        .feedback.correct {
+            color: #28a745;
+        }
+        .feedback.incorrect {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">Cumulative Math Review</div>
+        <p id="name-prompt">Enter your name to start:</p>
+        <input type="text" id="student-name" placeholder="Your name">
+        <button onclick="startGame()">Start Game</button>
+        
+        <div id="game-area" style="display:none;">
+            <p id="question"></p>
+            <input type="text" id="answer" placeholder="Your answer">
+            <p id="feedback" class="feedback"></p>
+            <p>Current Streak: <span id="streak">0</span> / 20</p>
+            <div class="badge" id="badge">
+                <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
+                <p>You successfully completed the cumulative review with 20 questions in a row correct!</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        let currentQuestion = {};
+        let correctStreak = 0;
+
+        const allQuestions = [
+            // Percentage of a value
+            { question: "What is 10% of $500?", type: "percentageOfValue", value: 500, percentage: 10 },
+            { question: "What is 25% of $1,200?", type: "percentageOfValue", value: 1200, percentage: 25 },
+
+            // What percentage a value is of another
+            { question: "What percentage is $50 of $200?", type: "percentageOfAnother", part: 50, whole: 200 },
+            { question: "What percentage is $30 of $150?", type: "percentageOfAnother", part: 30, whole: 150 },
+
+            // Percentage increase
+            { question: "A $100 item increased by 20%. What is the new price?", type: "percentageIncrease", originalValue: 100, percentage: 20 },
+            { question: "A $900 laptop increased by 10%. What is the new price?", type: "percentageIncrease", originalValue: 900, percentage: 10 },
+
+            // Percentage decrease
+            { question: "A $1,200 holiday decreased by 15%. What is the new price?", type: "percentageDecrease", originalValue: 1200, percentage: 15 },
+            { question: "A $75 jacket decreased by 20%. What is the new price?", type: "percentageDecrease", originalValue: 75, percentage: 20 },
+
+            // Value after percentage increase
+            { question: "A $200 fee increased by 25%. What is the new amount?", type: "valueAfterIncrease", originalValue: 200, percentageIncrease: 25 },
+            { question: "A $40 ticket increased by 15%. What is the total price?", type: "valueAfterIncrease", originalValue: 40, percentageIncrease: 15 },
+
+            // Value after percentage decrease
+            { question: "A $300 bill decreased by 10%. What is the total amount?", type: "valueAfterDecrease", originalValue: 300, percentageDecrease: 10 },
+            { question: "A $500 item decreased by 8%. What is the new price?", type: "valueAfterDecrease", originalValue: 500, percentageDecrease: 8 },
+        ];
+
+        function startGame() {
+            const name = document.getElementById("student-name").value.trim();
+            if (!name) {
+                alert("Please enter your name to start.");
+                return;
+            }
+            document.getElementById("name-prompt").style.display = "none";
+            document.getElementById("student-name").style.display = "none";
+            document.querySelector(".game-container button").style.display = "none";
+            document.getElementById("game-area").style.display = "block";
+            document.getElementById("student-name-badge").innerText = name;
+            generateQuestion();
+
+            document.getElementById("answer").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    submitAnswer();
+                }
+            });
+        }
+
+        function generateQuestion() {
+            const randomIndex = Math.floor(Math.random() * allQuestions.length);
+            currentQuestion = allQuestions[randomIndex];
+            document.getElementById("question").innerText = currentQuestion.question;
+        }
+
+        function submitAnswer() {
+            const userAnswer = parseFloat(document.getElementById("answer").value.trim());
+            let correctAnswer;
+
+            switch (currentQuestion.type) {
+                case "percentageOfValue":
+                    correctAnswer = currentQuestion.value * (currentQuestion.percentage / 100);
+                    break;
+                case "percentageOfAnother":
+                    correctAnswer = (currentQuestion.part / currentQuestion.whole) * 100;
+                    break;
+                case "percentageIncrease":
+                    correctAnswer = currentQuestion.originalValue * (1 + currentQuestion.percentage / 100);
+                    break;
+                case "percentageDecrease":
+                    correctAnswer = currentQuestion.originalValue * (1 - currentQuestion.percentage / 100);
+                    break;
+                case "valueAfterIncrease":
+                    correctAnswer = currentQuestion.originalValue * (1 + currentQuestion.percentageIncrease / 100);
+                    break;
+                case "valueAfterDecrease":
+                    correctAnswer = currentQuestion.originalValue * (1 - currentQuestion.percentageDecrease / 100);
+                    break;
+            }
+
+            if (Math.abs(userAnswer - correctAnswer) < 0.01) { // Allowing a small margin of error
+                correctStreak++;
+                document.getElementById("feedback").innerText = "Correct!";
+                document.getElementById("feedback").className = "feedback correct";
+                document.getElementById("streak").innerText = correctStreak;
+
+                if (correctStreak === 20) {
+                    displayBadge();
+                } else {
+                    generateQuestion();
+                }
+            } else {
+                correctStreak = 0;
+                document.getElementById("feedback").innerText = "Incorrect. Try again!";
+                document.getElementById("feedback").className = "feedback incorrect";
+                document.getElementById("streak").innerText = correctStreak;
+            }
+            document.getElementById("answer").value = "";
+        }
+
+        function displayBadge() {
+            document.getElementById("badge").style.display = "block";
+            document.getElementById("game-area").style.display = "none";
+        }
+    </script>
+</body>
+</html>
