@@ -84,6 +84,11 @@
             }
             document.getElementById("name-prompt").style.display = "none";
             document.getElementById("game-content").style.display = "block";
+            document.getElementById("answer").addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    submitAnswer();
+                }
+            });
             generateQuestion();
         }
 
