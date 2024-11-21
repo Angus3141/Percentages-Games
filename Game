@@ -5,19 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Percentage to Decimal Game</title>
     <style>
-        .game-container {
+        body {
             font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+        }
+        .game-container {
             text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             max-width: 400px;
-            margin: 20px auto;
+            width: 100%;
         }
         input[type="text"], button {
             font-size: 16px;
             margin: 10px;
             padding: 10px;
+            width: calc(100% - 20px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
         }
         .badge {
             display: none;
+            margin-top: 20px;
+            background-color: #ffeb3b;
+            padding: 20px;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -37,7 +67,7 @@
         </div>
         <div class="badge" id="badge">
             <h2>Congratulations <span id="badge-name"></span>!</h2>
-            <p>You completed the game!</p>
+            <p>You answered 10 consecutive questions correctly!</p>
             <button onclick="restartGame()">Play Again</button>
         </div>
     </div>
@@ -49,7 +79,7 @@
         function startGame() {
             studentName = document.getElementById("student-name").value.trim();
             if (!studentName) {
-                alert("Enter your name to start.");
+                alert("Please enter your name to start.");
                 return;
             }
             document.getElementById("name-prompt").style.display = "none";
