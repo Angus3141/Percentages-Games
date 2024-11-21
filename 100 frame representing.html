@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Percentage 100-Frame Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+        }
+
+        .game-container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 0;
+            font-size: 24px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        canvas {
+            border: 2px solid #4CAF50;
+            display: block;
+            margin: 20px auto;
+        }
+
+        input[type="text"], button {
+            font-size: 16px;
+            margin: 10px 0;
+            padding: 10px;
+            width: calc(100% - 20px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .feedback {
+            font-size: 16px;
+            margin: 10px 0;
+        }
+
+        .feedback.success {
+            color: #28a745;
+        }
+
+        .feedback.error {
+            color: #dc3545;
+        }
+
+        .badge {
+            display: none;
+            margin-top: 20px;
+            background-color: #ffeb3b;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 18px;
+        }
+
+        .streak {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">Percentage 100-Frame Game</div>
+        <div id="welcome-screen">
+            <p>Welcome! Enter your name to start the game:</p>
+            <input type="text" id="student-name" placeholder="Your Name">
+            <button id="start-game">Start Game</button>
+        </div>
+
+        <div id="game-screen" style="display: none;">
+            <p id="instructions"></p>
+            <canvas id="hundred-frame" width="300" height="300"></canvas>
+            <p>What percentage is shown on the 100-frame?</p>
+            <input type="text" id="percentage-input" placeholder="Enter %" />
+            <button id="submit-answer">Submit</button>
+            <p id="feedback" class="feedback"></p>
+            <p>Current Streak: <span class="streak" id="streak">0</span></p>
+        </div>
+
+        <div id="badge-container" class="badge">
+            <p id="badge"></p>
+            <button id="play-again">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const startGameButton = document.getElementById("start-game");
+        const submitAnswerButton = document.getElementById("submit-answer");
+        const playAgainButton = document.getElementById("play-again");
+        const percentageInput = document.getElementById("percentage-input");
+
+        const welcomeScreen = document.getElementById("welcome-screen");
+        const gameScreen = document.getElementById("game-screen");
+        const badgeContainer = document.getElementById("badge-container");
+        const studentNameInput = document.getElementById("student-name");
+        const instructions = document.getElementById("instructions");
+        const canvas = document.getElementById("hundred-frame");
+        const ctx = canvas.getContext("2d");
+        const feedback = document.getElementById("feedback");
+        const streakElement = document.getElementById("streak");
+        const badge = document.getElementById("badge");
+
+        let studentName = "";
+        let currentStreak = 0;
+        let targetPercentage = 0;
+
+        startGameButton.addEventListener("click", () => {
+            studentName = studentNameInput.value.trim();
+            if (!studentName) {
+                alert("Please enter your name.");
+                return;
+            }
+
+            welcomeScreen.style.display = "none";
+            gameScreen.style.display = "block";
+            instructions.textContent = `Hi ${studentName}, identify the percentage shown in the 100-frame.`;
+            resetGame();
+        });
+
+        function resetGame() {
+            currentStreak = 0;
+            updateStreak();
+            generateNewPercentage();
+        }
+
+        function generateNewPercentage() {
+            targetPercentage = Math.floor(Math.random() * 101); // Random percentage between 0 and 100
+            drawHundredFrame(targetPercentage);
+        }
+
+        function drawHundredFrame(percentage) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const filledBoxes = percentage;
+            const boxSize = 28; // Adjust size to fit 10x10 grid
+            const padding = 2;
+
+            for (let i = 0; i < 100; i++) {
+                const x = (i % 10) * (boxSize + padding);
+                const y = Math.floor(i / 10) * (boxSize + padding);
+                ctx.fillStyle = i < filledBoxes ? "#4CAF50" : "#ffffff";
+                ctx.fillRect(x, y, boxSize, boxSize);
+                ctx.strokeStyle = "#000";
+                ctx.strokeRect(x, y, boxSize, boxSize);
+            }
+        }
+
+        percentageInput.addEventListener("keyup", (event) => {
+            if (event.key === "Enter") {
+                submitAnswer();
+            }
+        });
+
+        submitAnswerButton.addEventListener("click", submitAnswer);
+
+        function submitAnswer() {
+            const userAnswer = parseInt(percentageInput.value.trim());
+            if (isNaN(userAnswer)) {
+                feedback.textContent = "Please enter a valid number.";
+                feedback.className = "feedback error";
+                return;
+            }
+
+            if (userAnswer === targetPercentage) {
+                currentStreak++;
+                feedback.textContent = `Correct, ${studentName}! Keep going!`;
+                feedback.className = "feedback success";
+                updateStreak();
+
+                if (currentStreak === 10) {
+                    showBadge();
+                } else {
+                    generateNewPercentage();
+                }
+            } else {
+                currentStreak = 0;
+                feedback.textContent = `Incorrect. Try again!`;
+                feedback.className = "feedback error";
+                updateStreak();
+                generateNewPercentage();
+            }
+
+            percentageInput.value = "";
+        }
+
+        function updateStreak() {
+            streakElement.textContent = currentStreak;
+        }
+
+        function showBadge() {
+            gameScreen.style.display = "none";
+            badgeContainer.style.display = "block";
+
+            badge.innerHTML = `
+                🏆 Congratulations ${studentName}! 🏆<br>
+                You've correctly identified 10 percentages in a row!
+            `;
+        }
+
+        playAgainButton.addEventListener("click", () => {
+            badgeContainer.style.display = "none";
+            gameScreen.style.display = "block";
+            resetGame();
+        });
+    </script>
+</body>
+</html>
