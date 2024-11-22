@@ -108,6 +108,34 @@
             { question: "A movie ticket price fell from $20 to $15. What is the percentage decrease?", oldValue: 20, newValue: 15 },
         ];
 
+        // Positive feedback messages
+        const positiveFeedbackMessages = [
+            "Excellent work!",
+            "Great job!",
+            "Well done!",
+            "You're correct!",
+            "That's right!",
+            "Fantastic!",
+            "You're doing great!",
+            "Keep it up!",
+            "Spot on!",
+            "You nailed it!",
+        ];
+
+        // Negative feedback messages
+        const negativeFeedbackMessages = [
+            "Not quite. Remember the formula.",
+            "Almost there, try again!",
+            "Keep trying, you can do it!",
+            "Don't give up!",
+            "Take another look at the calculation.",
+            "Incorrect, but you can get the next one!",
+            "Close, but not quite right.",
+            "Oops, that's not correct.",
+            "Give it another shot!",
+            "Review the steps and try again!",
+        ];
+
         // Event listener for Start Game button
         document.getElementById("start-button").addEventListener("click", startGame);
 
@@ -178,7 +206,11 @@
             const tolerance = 0.01;
             if (Math.abs(userAnswer - correctAnswer) <= tolerance) {
                 correctStreak++;
-                document.getElementById("feedback").innerText = "Correct!";
+
+                // Select a random positive feedback message
+                const positiveFeedback = positiveFeedbackMessages[Math.floor(Math.random() * positiveFeedbackMessages.length)];
+
+                document.getElementById("feedback").innerText = positiveFeedback;
                 document.getElementById("feedback").className = "feedback correct";
                 document.getElementById("streak").innerText = correctStreak;
 
@@ -189,7 +221,11 @@
                 }
             } else {
                 correctStreak = 0;
-                document.getElementById("feedback").innerText = `Incorrect. Remember, to calculate the percentage decrease, subtract the new value from the old value, divide by the old value, and then multiply by 100. For example: ((${currentQuestion.oldValue} - ${currentQuestion.newValue}) / ${currentQuestion.oldValue}) * 100. Try again!`;
+
+                // Select a random negative feedback message
+                const negativeFeedback = negativeFeedbackMessages[Math.floor(Math.random() * negativeFeedbackMessages.length)];
+
+                document.getElementById("feedback").innerText = `${negativeFeedback} Remember, to calculate the percentage decrease: ((old value - new value) ÷ old value) × 100. Try again!`;
                 document.getElementById("feedback").className = "feedback incorrect";
                 document.getElementById("streak").innerText = correctStreak;
                 document.getElementById("answer").value = "";
