@@ -86,7 +86,7 @@
         <!-- Moved the badge div outside of game-area -->
         <div class="badge" id="badge">
             <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
-            <p>You compared one value to another, using percentage, ten times consecutively!</p>
+            <p>You compared one value to another using percentages ten times consecutively!</p>
         </div>
     </div>
     <script>
@@ -124,6 +124,20 @@
             { question: "A store sold 80 out of 400 items on sale. What percentage is this?", part: 80, whole: 400 },
             { question: "You walked 3 miles out of a planned 15-mile hike. What percentage have you completed?", part: 3, whole: 15 },
             { question: "An investor owns 5,000 shares out of 100,000 total shares. What percentage do they own?", part: 5000, whole: 100000 },
+        ];
+
+        // Positive feedback messages
+        const positiveFeedbackMessages = [
+            "Excellent work!",
+            "Great job!",
+            "Well done!",
+            "You're correct!",
+            "That's right!",
+            "Fantastic!",
+            "You're doing great!",
+            "Keep it up!",
+            "Spot on!",
+            "You nailed it!",
         ];
 
         // Event listener for Start Game button
@@ -187,7 +201,11 @@
             const tolerance = 0.01;
             if (Math.abs(userAnswer - correctAnswer) <= tolerance) {
                 correctStreak++;
-                document.getElementById("feedback").innerText = "Correct!";
+
+                // Select a random positive feedback message
+                const positiveFeedback = positiveFeedbackMessages[Math.floor(Math.random() * positiveFeedbackMessages.length)];
+
+                document.getElementById("feedback").innerText = positiveFeedback;
                 document.getElementById("feedback").className = "feedback correct";
                 document.getElementById("streak").innerText = correctStreak;
 
