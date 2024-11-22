@@ -452,7 +452,7 @@
                 // Select a random negative feedback message
                 const negativeFeedback = negativeFeedbackMessages[Math.floor(Math.random() * negativeFeedbackMessages.length)];
 
-                document.getElementById("feedback").innerText = `${negativeFeedback} Incorrect. Remember, to calculate the percentage increase: <br> "1. Subtract the old value from the new value." <br> "Divide this number by divide by the old value' 3. Multiply by 100." <br> "For example: ((20 ÷ 15) / 15) x 100. Try again!Remember, to calculate the percentage decrease: ((old value - new value) ÷ old value) × 100. Try again!`;
+                document.getElementById("feedback").innerText = `${negativeFeedback} "Incorrect. Remember, to calculate the percentage increase:" <br> "1. Subtract the old value from the new value." <br> "Divide this number by divide by the old value' 3. Multiply by 100." <br> "For example: ((20 ÷ 15) / 15) x 100. Try again!Remember, to calculate the percentage decrease: ((old value - new value) ÷ old value) × 100. Try again!`;
                 document.getElementById("feedback").className = "feedback incorrect";
                 document.getElementById("streak").innerText = correctStreak;
                 document.getElementById("answer").value = "";
