@@ -225,7 +225,249 @@
                 // Select a random negative feedback message
                 const negativeFeedback = negativeFeedbackMessages[Math.floor(Math.random() * negativeFeedbackMessages.length)];
 
-                document.getElementById("feedback").innerText = `${negativeFeedback} Remember, to calculate the percentage decrease: ((old value - new value) ÷ old value) × 100. Try again!`;
+                document.getElementById("feedback").innerText = `${negativeFeedback} <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculate Percentage Decrease</title>
+    <style>
+        /* Styles remain largely the same */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+        }
+        .game-container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 0;
+            font-size: 20px;
+            border-radius: 8px 8px 0 0;
+        }
+        input[type="text"], button {
+            font-size: 16px;
+            margin: 10px;
+            padding: 10px;
+            width: calc(100% - 20px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .badge {
+            display: none;
+            margin-top: 20px;
+            background-color: #ffeb3b;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            color: #000;
+        }
+        .feedback {
+            margin: 10px 0;
+        }
+        .feedback.correct {
+            color: #28a745;
+        }
+        .feedback.incorrect {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">Percentage Decrease Challenge</div>
+        <p id="name-prompt">Enter your name to start:</p>
+        <input type="text" id="student-name" placeholder="Your name">
+        <button id="start-button">Start Game</button>
+        
+        <div id="game-area" style="display:none;">
+            <p id="question"></p>
+            <input type="text" id="answer" placeholder="Your answer">
+            <button id="submit-button">Submit</button>
+            <p id="feedback" class="feedback"></p>
+            <p>Current Streak: <span id="streak">0</span> / 10</p>
+        </div>
+
+        <!-- Moved the badge div outside of game-area -->
+        <div class="badge" id="badge">
+            <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
+            <p>You achieved a 10-question winning streak!</p>
+            <!-- Optional Restart Button -->
+            <button id="restart-button">Play Again</button>
+        </div>
+    </div>
+    <script>
+        let currentQuestion = {};
+        let correctStreak = 0;
+        let usedQuestions = [];
+        const questions = [
+            { question: "An item was $100 and is now $75. What is the percentage decrease?", oldValue: 100, newValue: 75 },
+            { question: "A car's price dropped from $25,000 to $20,000. What is the percentage decrease?", oldValue: 25000, newValue: 20000 },
+            { question: "Rent decreased from $1,800 to $1,500. What is the percentage decrease?", oldValue: 1800, newValue: 1500 },
+            { question: "A monthly subscription was $45 and is now $30. What is the percentage decrease?", oldValue: 45, newValue: 30 },
+            { question: "Electricity bills fell from $180 to $120. What is the percentage decrease?", oldValue: 180, newValue: 120 },
+            { question: "A laptop price dropped from $1,200 to $900. What is the percentage decrease?", oldValue: 1200, newValue: 900 },
+            { question: "A house was valued at $500,000 and is now $400,000. What is the percentage decrease?", oldValue: 500000, newValue: 400000 },
+            { question: "A $75 jacket is now $60. What is the percentage decrease?", oldValue: 75, newValue: 60 },
+            { question: "A gym membership dropped from $65 to $50. What is the percentage decrease?", oldValue: 65, newValue: 50 },
+            { question: "A movie ticket price fell from $20 to $15. What is the percentage decrease?", oldValue: 20, newValue: 15 },
+        ];
+
+        // Positive feedback messages
+        const positiveFeedbackMessages = [
+            "Excellent work!",
+            "Great job!",
+            "Well done!",
+            "You're correct!",
+            "That's right!",
+            "Fantastic!",
+            "You're doing great!",
+            "Keep it up!",
+            "Spot on!",
+            "You nailed it!",
+        ];
+
+        // Negative feedback messages
+        const negativeFeedbackMessages = [
+            "Not quite. Remember the formula.",
+            "Almost there, try again!",
+            "Keep trying, you can do it!",
+            "Don't give up!",
+            "Take another look at the calculation.",
+            "Incorrect, but you can get the next one!",
+            "Close, but not quite right.",
+            "Oops, that's not correct.",
+            "Give it another shot!",
+            "Review the steps and try again!",
+        ];
+
+        // Event listener for Start Game button
+        document.getElementById("start-button").addEventListener("click", startGame);
+
+        function startGame() {
+            const name = document.getElementById("student-name").value.trim();
+            if (!name) {
+                alert("Please enter your name to start.");
+                return;
+            }
+            document.getElementById("name-prompt").style.display = "none";
+            document.getElementById("student-name").style.display = "none";
+            document.getElementById("start-button").style.display = "none";
+            document.getElementById("game-area").style.display = "block";
+            document.getElementById("student-name-badge").innerText = name;
+            generateQuestion();
+
+            // Event listener for Enter key in the answer input field
+            document.getElementById("answer").addEventListener("keypress", function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    submitAnswer();
+                }
+            });
+
+            // Event listener for Submit button
+            document.getElementById("submit-button").addEventListener("click", submitAnswer);
+
+            // Event listener for Restart button (optional)
+            document.getElementById("restart-button").addEventListener("click", function() {
+                correctStreak = 0;
+                document.getElementById("streak").innerText = correctStreak;
+                document.getElementById("badge").style.display = "none";
+                document.getElementById("game-area").style.display = "block";
+                generateQuestion();
+            });
+        }
+
+        function generateQuestion() {
+            if (usedQuestions.length === questions.length) {
+                usedQuestions = [];
+            }
+
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * questions.length);
+            } while (usedQuestions.includes(randomIndex));
+
+            usedQuestions.push(randomIndex);
+            currentQuestion = questions[randomIndex];
+            document.getElementById("question").innerText = currentQuestion.question;
+            document.getElementById("feedback").innerText = "";
+            document.getElementById("feedback").className = "feedback";
+            document.getElementById("answer").value = "";
+            document.getElementById("answer").focus();
+        }
+
+        function submitAnswer() {
+            const userAnswer = parseFloat(document.getElementById("answer").value.trim());
+            const correctAnswer = ((currentQuestion.oldValue - currentQuestion.newValue) / currentQuestion.oldValue) * 100;
+
+            if (isNaN(userAnswer)) {
+                document.getElementById("feedback").innerText = "Please enter a valid number.";
+                document.getElementById("feedback").className = "feedback incorrect";
+                return;
+            }
+
+            // Allow a small tolerance for floating-point errors
+            const tolerance = 0.01;
+            if (Math.abs(userAnswer - correctAnswer) <= tolerance) {
+                correctStreak++;
+
+                // Select a random positive feedback message
+                const positiveFeedback = positiveFeedbackMessages[Math.floor(Math.random() * positiveFeedbackMessages.length)];
+
+                document.getElementById("feedback").innerText = positiveFeedback;
+                document.getElementById("feedback").className = "feedback correct";
+                document.getElementById("streak").innerText = correctStreak;
+
+                if (correctStreak === 10) {
+                    displayBadge();
+                } else {
+                    generateQuestion();
+                }
+            } else {
+                correctStreak = 0;
+
+                // Select a random negative feedback message
+                const negativeFeedback = negativeFeedbackMessages[Math.floor(Math.random() * negativeFeedbackMessages.length)];
+
+                document.getElementById("feedback").innerText = `${negativeFeedback} Incorrect. Remember, to calculate the percentage increase: <br> "1. Subtract the old value from the new value." <br> "Divide this number by divide by the old value' 3. Multiply by 100." <br> "For example: ((20 ÷ 15) / 15) x 100. Try again!Remember, to calculate the percentage decrease: ((old value - new value) ÷ old value) × 100. Try again!`;
+                document.getElementById("feedback").className = "feedback incorrect";
+                document.getElementById("streak").innerText = correctStreak;
+                document.getElementById("answer").value = "";
+                document.getElementById("answer").focus();
+            }
+        }
+
+        function displayBadge() {
+            document.getElementById("badge").style.display = "block";
+            document.getElementById("game-area").style.display = "none";
+        }
+    </script>
+</body>
+</html>
+Remember, to calculate the percentage decrease: ((old value - new value) ÷ old value) × 100. Try again!`;
                 document.getElementById("feedback").className = "feedback incorrect";
                 document.getElementById("streak").innerText = correctStreak;
                 document.getElementById("answer").value = "";
