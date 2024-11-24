@@ -31,7 +31,7 @@
             font-size: 20px;
             border-radius: 8px 8px 0 0;
         }
-        input[type="text"], button {
+        input[type="text"], button, select {
             font-size: 16px;
             margin: 10px;
             padding: 10px;
@@ -73,15 +73,15 @@
         <div class="header">Calculating Percentage of a Value</div>
         <p id="name-prompt">Enter your name to start:</p>
         <input type="text" id="student-name" placeholder="Your name">
+        <label for="difficulty">Select Difficulty:</label>
+        <select id="difficulty">
+            <option value="1">Level 1 (Easy)</option>
+            <option value="2" selected>Level 2 (Medium)</option>
+            <option value="3">Level 3 (Hard)</option>
+        </select>
         <button id="start-button">Start Game</button>
 
         <div id="game-area" style="display:none;">
-            <label for="difficulty">Select Difficulty:</label>
-            <select id="difficulty">
-                <option value="1">Level 1 (Easy)</option>
-                <option value="2" selected>Level 2 (Medium)</option>
-                <option value="3">Level 3 (Hard)</option>
-            </select>
             <p id="question"></p>
             <input type="text" id="answer" placeholder="Your answer">
             <button id="submit-button">Submit</button>
@@ -224,6 +224,7 @@
             }
             document.getElementById("name-prompt").style.display = "none";
             document.getElementById("student-name").style.display = "none";
+            document.getElementById("difficulty").style.display = "none";
             document.getElementById("start-button").style.display = "none";
             document.getElementById("game-area").style.display = "block";
             document.getElementById("student-name-badge").innerText = name;
