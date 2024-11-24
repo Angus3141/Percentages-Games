@@ -73,12 +73,7 @@
         <div class="header">Calculating Percentage of a Value</div>
         <p id="name-prompt">Enter your name to start:</p>
         <input type="text" id="student-name" placeholder="Your name">
-        <label for="difficulty">Select Difficulty:</label>
-        <select id="difficulty">
-            <option value="1">Level 1 (Easy)</option>
-            <option value="2" selected>Level 2 (Medium)</option>
-            <option value="3">Level 3 (Hard)</option>
-        </select>
+        
         <button id="start-button">Start Game</button>
 
         <div id="game-area" style="display:none;">
@@ -91,8 +86,8 @@
 
         <!-- Move the badge div outside of game-area -->
         <div class="badge" id="badge">
-            <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
-            <p>You correctly found a percentage of a value 10 times consecutively.</p>
+            <h2>$1</h2>
+            <p>$2 (Level: <span id="difficulty-level"></span>)</p>
             <!-- Optional Restart Button -->
             <button id="restart-button">Play Again</button>
         </div>
@@ -228,6 +223,8 @@
             document.getElementById("start-button").style.display = "none";
             document.getElementById("game-area").style.display = "block";
             document.getElementById("student-name-badge").innerText = name;
+            const difficultyText = document.getElementById("difficulty").options[document.getElementById("difficulty").selectedIndex].text;
+            document.getElementById("difficulty-level").innerText = difficultyText;
             generateQuestion();
 
             // Event listener for Enter key in the answer input field
