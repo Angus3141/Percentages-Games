@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert Fractions to Percentages Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f8ff;
+        }
+        .game-container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 0;
+            font-size: 20px;
+            border-radius: 8px 8px 0 0;
+        }
+        input[type="text"], button {
+            font-size: 16px;
+            margin: 10px;
+            padding: 10px;
+            width: calc(100% - 20px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .badge {
+            display: none;
+            margin-top: 20px;
+            background-color: #ffeb3b;
+            padding: 20px;
+            border-radius: 10px;
+        }
+        #feedback {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        .positive {
+            color: #28a745;
+        }
+        .negative {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="header">Convert Fractions to Percentages Game</div>
+        <p>Please enter your name:</p>
+        <input type="text" id="studentName" placeholder="Your Name">
+        <button onclick="startGame()">Start Game</button>
+        <div id="game" style="display: none;">
+            <p id="question"></p>
+            <input type="text" id="answer" placeholder="Your answer">
+            <button onclick="submitAnswer()">Submit</button>
+            <p id="feedback"></p>
+            <p>Streak: <span id="streak">0</span></p>
+            <div class="badge" id="badge">
+                <h2>🏆 Congratulations, <span id="studentBadgeName"></span>! 🏆</h2>
+                <p>You successfully completed the challenge!</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        let numerator = 0;
+        let denominator = 0;
+        let correctStreak = 0;
+        let studentName = "";
+
+        function startGame() {
+            studentName = document.getElementById("studentName").value.trim();
+            if (!studentName) {
+                alert("Please enter your name to start the game!");
+                return;
+            }
+            document.getElementById("game").style.display = "block";
+            document.getElementById("studentName").style.display = "none";
+            document.querySelector("button").style.display = "none";
+            generateQuestion();
+        }
+
+        function generateQuestion() {
+            numerator = Math.floor(Math.random() * 50) + 1; // Random numerator between 1 and 50
+            denominator = Math.floor(Math.random() * 50) + 1; // Random denominator between 1 and 50
+            document.getElementById("question").innerText = `Convert ${numerator}/${denominator} to a percentage:`;
+        }
+
+        function submitAnswer() {
+            const userAnswer = parseFloat(document.getElementById("answer").value.trim());
+            const correctAnswer = ((numerator / denominator) * 100).toFixed(2);
+
+            if (userAnswer === parseFloat(correctAnswer)) {
+                correctStreak++;
+                document.getElementById("feedback").innerText = "Correct!";
+                document.getElementById("feedback").className = "positive";
+                document.getElementById("streak").innerText = correctStreak;
+
+                if (correctStreak === 10) {
+                    displayBadge();
+                } else {
+                    generateQuestion();
+                }
+            } else {
+                correctStreak = 0;
+                document.getElementById("feedback").innerText = "Incorrect. Try again!";
+                document.getElementById("feedback").className = "negative";
+                document.getElementById("streak").innerText = correctStreak;
+            }
+        }
+
+        function displayBadge() {
+            document.getElementById("badge").style.display = "block";
+            document.getElementById("studentBadgeName").innerText = studentName;
+        }
+    </script>
+</body>
+</html>
