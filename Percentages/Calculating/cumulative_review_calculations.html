@@ -85,7 +85,7 @@
 
         <!-- Moved the badge div outside of game-area -->
         <div class="badge" id="badge">
-            <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
+            <h2>🌟 Congratulations, <span id="student-name-badge"></span>! 🌟</h2>
             <p>You successfully completed the cumulative review with 20 questions in a row correct!</p>
             <!-- Optional Restart Button -->
             <button id="restart-button">Play Again</button>
@@ -97,29 +97,97 @@
         let usedQuestions = [];
 
         const allQuestions = [
-            // Percentage of a value
+            // Percentage of a value (13 additional questions added)
             { question: "What is 10% of $500?", type: "percentageOfValue", value: 500, percentage: 10 },
             { question: "What is 25% of $1,200?", type: "percentageOfValue", value: 1200, percentage: 25 },
+            { question: "What is 15% of $600?", type: "percentageOfValue", value: 600, percentage: 15 },
+            { question: "What is 50% of $1,000?", type: "percentageOfValue", value: 1000, percentage: 50 },
+            { question: "What is 5% of $300?", type: "percentageOfValue", value: 300, percentage: 5 },
+            { question: "What is 30% of $700?", type: "percentageOfValue", value: 700, percentage: 30 },
+            { question: "What is 40% of $250?", type: "percentageOfValue", value: 250, percentage: 40 },
+            { question: "What is 60% of $800?", type: "percentageOfValue", value: 800, percentage: 60 },
+            { question: "What is 75% of $1,500?", type: "percentageOfValue", value: 1500, percentage: 75 },
+            { question: "What is 20% of $900?", type: "percentageOfValue", value: 900, percentage: 20 },
+            { question: "What is 35% of $400?", type: "percentageOfValue", value: 400, percentage: 35 },
+            { question: "What is 80% of $2,000?", type: "percentageOfValue", value: 2000, percentage: 80 },
+            { question: "What is 90% of $1,800?", type: "percentageOfValue", value: 1800, percentage: 90 },
+            { question: "What is 12% of $2,500?", type: "percentageOfValue", value: 2500, percentage: 12 },
 
-            // What percentage a value is of another
+            // What percentage a value is of another (13 additional questions added)
             { question: "What percentage is $50 of $200?", type: "percentageOfAnother", part: 50, whole: 200 },
             { question: "What percentage is $30 of $150?", type: "percentageOfAnother", part: 30, whole: 150 },
+            { question: "What percentage is $75 of $300?", type: "percentageOfAnother", part: 75, whole: 300 },
+            { question: "What percentage is $120 of $600?", type: "percentageOfAnother", part: 120, whole: 600 },
+            { question: "What percentage is $90 of $450?", type: "percentageOfAnother", part: 90, whole: 450 },
+            { question: "What percentage is $25 of $500?", type: "percentageOfAnother", part: 25, whole: 500 },
+            { question: "What percentage is $180 of $900?", type: "percentageOfAnother", part: 180, whole: 900 },
+            { question: "What percentage is $40 of $800?", type: "percentageOfAnother", part: 40, whole: 800 },
+            { question: "What percentage is $300 of $1,200?", type: "percentageOfAnother", part: 300, whole: 1200 },
+            { question: "What percentage is $250 of $1,000?", type: "percentageOfAnother", part: 250, whole: 1000 },
+            { question: "What percentage is $15 of $75?", type: "percentageOfAnother", part: 15, whole: 75 },
+            { question: "What percentage is $500 of $2,000?", type: "percentageOfAnother", part: 500, whole: 2000 },
+            { question: "What percentage is $350 of $700?", type: "percentageOfAnother", part: 350, whole: 700 },
+            { question: "What percentage is $80 of $400?", type: "percentageOfAnother", part: 80, whole: 400 },
 
-            // Percentage increase
+            // Percentage increase (13 additional questions added)
             { question: "A $100 item increased by 20%. What is the increase amount?", type: "percentageIncrease", originalValue: 100, percentage: 20 },
             { question: "A $900 laptop increased by 10%. What is the increase amount?", type: "percentageIncrease", originalValue: 900, percentage: 10 },
+            { question: "A $500 phone increased by 15%. What is the increase amount?", type: "percentageIncrease", originalValue: 500, percentage: 15 },
+            { question: "A $200 jacket increased by 25%. What is the increase amount?", type: "percentageIncrease", originalValue: 200, percentage: 25 },
+            { question: "A $700 bike increased by 30%. What is the increase amount?", type: "percentageIncrease", originalValue: 700, percentage: 30 },
+            { question: "A $1,000 TV increased by 5%. What is the increase amount?", type: "percentageIncrease", originalValue: 1000, percentage: 5 },
+            { question: "A $400 chair increased by 18%. What is the increase amount?", type: "percentageIncrease", originalValue: 400, percentage: 18 },
+            { question: "A $1,500 sofa increased by 12%. What is the increase amount?", type: "percentageIncrease", originalValue: 1500, percentage: 12 },
+            { question: "A $250 table increased by 8%. What is the increase amount?", type: "percentageIncrease", originalValue: 250, percentage: 8 },
+            { question: "A $800 fridge increased by 22%. What is the increase amount?", type: "percentageIncrease", originalValue: 800, percentage: 22 },
+            { question: "A $350 microwave increased by 10%. What is the increase amount?", type: "percentageIncrease", originalValue: 350, percentage: 10 },
+            { question: "A $600 washing machine increased by 14%. What is the increase amount?", type: "percentageIncrease", originalValue: 600, percentage: 14 },
+            { question: "A $1,800 computer increased by 6%. What is the increase amount?", type: "percentageIncrease", originalValue: 1800, percentage: 6 },
 
-            // Percentage decrease
+            // Percentage decrease (13 additional questions added)
             { question: "A $1,200 holiday decreased by 15%. What is the decrease amount?", type: "percentageDecrease", originalValue: 1200, percentage: 15 },
             { question: "A $75 jacket decreased by 20%. What is the decrease amount?", type: "percentageDecrease", originalValue: 75, percentage: 20 },
+            { question: "A $500 camera decreased by 10%. What is the decrease amount?", type: "percentageDecrease", originalValue: 500, percentage: 10 },
+            { question: "A $300 bag decreased by 25%. What is the decrease amount?", type: "percentageDecrease", originalValue: 300, percentage: 25 },
+            { question: "A $1,000 holiday decreased by 5%. What is the decrease amount?", type: "percentageDecrease", originalValue: 1000, percentage: 5 },
+            { question: "A $400 watch decreased by 18%. What is the decrease amount?", type: "percentageDecrease", originalValue: 400, percentage: 18 },
+            { question: "A $900 TV decreased by 12%. What is the decrease amount?", type: "percentageDecrease", originalValue: 900, percentage: 12 },
+            { question: "A $150 shoes decreased by 8%. What is the decrease amount?", type: "percentageDecrease", originalValue: 150, percentage: 8 },
+            { question: "A $700 bicycle decreased by 22%. What is the decrease amount?", type: "percentageDecrease", originalValue: 700, percentage: 22 },
+            { question: "A $250 furniture decreased by 10%. What is the decrease amount?", type: "percentageDecrease", originalValue: 250, percentage: 10 },
+            { question: "A $600 garden equipment decreased by 14%. What is the decrease amount?", type: "percentageDecrease", originalValue: 600, percentage: 14 },
+            { question: "A $1,400 laptop decreased by 6%. What is the decrease amount?", type: "percentageDecrease", originalValue: 1400, percentage: 6 },
+            { question: "A $2,000 holiday package decreased by 20%. What is the decrease amount?", type: "percentageDecrease", originalValue: 2000, percentage: 20 },
 
-            // Value after percentage increase
+            // Value after percentage increase (13 additional questions added)
             { question: "A $200 fee increased by 25%. What is the new amount?", type: "valueAfterIncrease", originalValue: 200, percentage: 25 },
             { question: "A $40 ticket increased by 15%. What is the total price?", type: "valueAfterIncrease", originalValue: 40, percentage: 15 },
+            { question: "A $500 computer increased by 10%. What is the new value?", type: "valueAfterIncrease", originalValue: 500, percentage: 10 },
+            { question: "A $120 jacket increased by 20%. What is the total cost?", type: "valueAfterIncrease", originalValue: 120, percentage: 20 },
+            { question: "A $700 phone increased by 30%. What is the new value?", type: "valueAfterIncrease", originalValue: 700, percentage: 30 },
+            { question: "A $1,000 appliance increased by 5%. What is the new price?", type: "valueAfterIncrease", originalValue: 1000, percentage: 5 },
+            { question: "A $150 chair increased by 18%. What is the new cost?", type: "valueAfterIncrease", originalValue: 150, percentage: 18 },
+            { question: "A $1,500 bicycle increased by 12%. What is the new value?", type: "valueAfterIncrease", originalValue: 1500, percentage: 12 },
+            { question: "A $250 table increased by 8%. What is the total price?", type: "valueAfterIncrease", originalValue: 250, percentage: 8 },
+            { question: "A $800 furniture increased by 22%. What is the new cost?", type: "valueAfterIncrease", originalValue: 800, percentage: 22 },
+            { question: "A $350 appliance increased by 10%. What is the total price?", type: "valueAfterIncrease", originalValue: 350, percentage: 10 },
+            { question: "A $600 washing machine increased by 14%. What is the new value?", type: "valueAfterIncrease", originalValue: 600, percentage: 14 },
+            { question: "A $1,800 holiday increased by 6%. What is the new price?", type: "valueAfterIncrease", originalValue: 1800, percentage: 6 },
 
-            // Value after percentage decrease
+            // Value after percentage decrease (13 additional questions added)
             { question: "A $300 bill decreased by 10%. What is the new amount?", type: "valueAfterDecrease", originalValue: 300, percentage: 10 },
             { question: "A $500 item decreased by 8%. What is the new price?", type: "valueAfterDecrease", originalValue: 500, percentage: 8 },
+            { question: "A $900 computer decreased by 10%. What is the new value?", type: "valueAfterDecrease", originalValue: 900, percentage: 10 },
+            { question: "A $150 shoes decreased by 20%. What is the new cost?", type: "valueAfterDecrease", originalValue: 150, percentage: 20 },
+            { question: "A $700 bicycle decreased by 30%. What is the new value?", type: "valueAfterDecrease", originalValue: 700, percentage: 30 },
+            { question: "A $1,000 appliance decreased by 5%. What is the new price?", type: "valueAfterDecrease", originalValue: 1000, percentage: 5 },
+            { question: "A $150 watch decreased by 18%. What is the new value?", type: "valueAfterDecrease", originalValue: 150, percentage: 18 },
+            { question: "A $1,500 appliance decreased by 12%. What is the new value?", type: "valueAfterDecrease", originalValue: 1500, percentage: 12 },
+            { question: "A $250 item decreased by 8%. What is the new value?", type: "valueAfterDecrease", originalValue: 250, percentage: 8 },
+            { question: "A $800 furniture decreased by 22%. What is the new value?", type: "valueAfterDecrease", originalValue: 800, percentage: 22 },
+            { question: "A $350 appliance decreased by 10%. What is the total value?", type: "valueAfterDecrease", originalValue: 350, percentage: 10 },
+            { question: "A $600 garden item decreased by 14%. What is the new cost?", type: "valueAfterDecrease", originalValue: 600, percentage: 14 },
+            { question: "A $1,800 holiday decreased by 6%. What is the new price?", type: "valueAfterDecrease", originalValue: 1800, percentage: 6 },
         ];
 
         // Event listener for Start Game button
