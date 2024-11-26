@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Cumulative Math Review</title>
     <style>
-        /* CSS styles remain largely the same */
+        /* CSS styles */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -73,7 +73,7 @@
         <div class="header">Cumulative Math Review</div>
         <p id="name-prompt">Enter your name to start:</p>
         <input type="text" id="student-name" placeholder="Your name">
-        <button id="start-button" onclick="startGame()">Start Game</button>
+        <button id="start-button">Start Game</button>
         
         <div id="game-area" style="display:none;">
             <p id="question"></p>
@@ -94,15 +94,72 @@
     <script>
         let currentQuestion = {};
         let correctStreak = 0;
-                incorrectCounts[currentCategory]++;
-                if (incorrectCounts[currentCategory] > 3) {
-                    alert(`You have answered more than 3 questions incorrectly in the '${currentCategory}' category. Please go back and practice the relevant game until you feel more confident.`);
-                }
-                document.getElementById("streak").innerText = correctStreak;
-                document.getElementById("badge").style.display = "none";
-                document.getElementById("game-area").style.display = "block";
-                generateQuestion();
-            });
+        let usedQuestions = [];
+
+        // Initialize incorrectCounts
+        let incorrectCounts = {
+            percentageOfValue: 0,
+            percentageOfAnother: 0,
+            percentageIncrease: 0,
+            percentageDecrease: 0,
+            valueAfterIncrease: 0,
+            valueAfterDecrease: 0
+        };
+
+        // Sample data for allQuestions
+        let allQuestions = [
+            // Add your question objects here
+            {
+                type: "percentageOfValue",
+                question: "What is 20% of 50?",
+                value: 50,
+                percentage: 20
+            },
+            {
+                type: "percentageOfAnother",
+                question: "What percentage is 30 of 150?",
+                part: 30,
+                whole: 150
+            },
+            {
+                type: "percentageIncrease",
+                question: "What is the increase amount if the original value is 80 and the percentage increase is 25%?",
+                originalValue: 80,
+                percentage: 25
+            },
+            {
+                type: "percentageDecrease",
+                question: "What is the decrease amount if the original value is 60 and the percentage decrease is 15%?",
+                originalValue: 60,
+                percentage: 15
+            },
+            {
+                type: "valueAfterIncrease",
+                question: "What is the new value after increasing 100 by 10%?",
+                originalValue: 100,
+                percentage: 10
+            },
+            {
+                type: "valueAfterDecrease",
+                question: "What is the new value after decreasing 200 by 20%?",
+                originalValue: 200,
+                percentage: 20
+            }
+            // You can add more question objects...
+        ];
+
+        function startGame() {
+            const name = document.getElementById("student-name").value.trim();
+            if (!name) {
+                alert("Please enter your name to start.");
+                return;
+            }
+            document.getElementById("name-prompt").style.display = "none";
+            document.getElementById("student-name").style.display = "none";
+            document.getElementById("start-button").style.display = "none";
+            document.getElementById("game-area").style.display = "block";
+            document.getElementById("student-name-badge").innerText = name;
+            generateQuestion();
         }
 
         function generateQuestion() {
@@ -175,6 +232,12 @@
                 document.getElementById("streak").innerText = correctStreak;
                 document.getElementById("answer").value = "";
                 document.getElementById("answer").focus();
+
+                // Handle incorrect counts per category
+                incorrectCounts[currentCategory]++;
+                if (incorrectCounts[currentCategory] > 3) {
+                    alert(`You have answered more than 3 questions incorrectly in the '${currentCategory}' category. Please go back and practice the relevant game until you feel more confident.`);
+                }
             }
         }
 
@@ -199,19 +262,21 @@
             document.getElementById("badge").style.display = "block";
             document.getElementById("game-area").style.display = "none";
         }
-    function startGame() {
-            const name = document.getElementById("student-name").value.trim();
-            if (!name) {
-                alert("Please enter your name to start.");
-                return;
-            }
-            document.getElementById("name-prompt").style.display = "none";
-            document.getElementById("student-name").style.display = "none";
-            document.getElementById("start-button").style.display = "none";
-            document.getElementById("game-area").style.display = "block";
-            document.getElementById("student-name-badge").innerText = name;
-            generateQuestion();
-        }
+
+        // Add event listeners after the DOM content is loaded
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("start-button").addEventListener("click", startGame);
+            document.getElementById("submit-button").addEventListener("click", submitAnswer);
+            document.getElementById("restart-button").addEventListener("click", function() {
+                // Reset game state
+                correctStreak = 0;
+                usedQuestions = [];
+                document.getElementById("streak").innerText = correctStreak;
+                document.getElementById("badge").style.display = "none";
+                document.getElementById("game-area").style.display = "block";
+                generateQuestion();
+            });
+        });
     </script>
 </body>
 </html>
