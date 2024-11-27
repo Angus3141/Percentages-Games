@@ -213,7 +213,7 @@
                     break;
             }
 
-            const tolerance = 0.01;
+            const tolerance = 1;
             if (Math.abs(userAnswer - correctAnswer) <= tolerance) {
                 correctStreak++;
                 document.getElementById("feedback").innerText = "Correct!";
