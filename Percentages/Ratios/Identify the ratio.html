@@ -1,0 +1,273 @@
+ html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ratio Review Game</title>
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f8ff;
+        }
+        .game-container {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            max-width: 500px;
+            width: 100%;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 15px 0;
+            font-size: 20px;
+            border-radius: 8px 8px 0 0;
+        }
+        input[type="text"], button {
+            font-size: 16px;
+            margin: 10px;
+            padding: 10px;
+            width: calc(100% - 20px);
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .feedback {
+            margin: 10px 0;
+        }
+        .feedback.correct {
+            color: #28a745;
+        }
+        .feedback.incorrect {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        
+
+        <div class="header">Ratio Review Game</div>
+        <p id="name-prompt">Enter your name to start:</p>
+        <input type="text" id="player-name" placeholder="Your name">
+        <p id="scenario"></p>
+        <div id="questions-area" style="display:none;">
+            
+            <p id="question"></p>
+            <input type="text" id="answer" placeholder="Your answer">
+            <button id="submit-button">Submit</button>
+            <p id="feedback" class="feedback"></p>
+            
+        </div>
+        <p id="total-score" style="display:none;">Total Correct Answers: <span id="total-correct">0</span><br>Sets Completed Correctly: <span id="sets-completed">0</span></p>
+        <button id="start-button">Start Game</button>
+    </div>
+    <script>
+        let currentScenarioIndex = 0;
+let currentQuestionIndex = 0;
+let scenariosCompletedCorrectly = 0;
+        let correctAnswers = 0;
+        let scenarios = [
+            {
+                scenario: "A box contains 8 red pens and 9 blue pens.",
+                questions: [
+                    { question: "Find the ratio of: Red pens to blue pens", correctAnswer: "8:9" },
+                    { question: "Find the ratio of: Blue pens to red pens", correctAnswer: "9:8" },
+                    { question: "Find the ratio of: Red pens to the total number of pens", correctAnswer: "8:17" },
+                    { question: "Find the ratio of: Blue pens to the total number of pens", correctAnswer: "9:17" }
+                ]
+            },
+            {
+                scenario: "A bag contains 5 apples, 7 bananas, and 3 oranges.",
+                questions: [
+                    { question: "Find the ratio of: Apples to bananas", correctAnswer: "5:7" },
+                    { question: "Find the ratio of: Bananas to oranges", correctAnswer: "7:3" },
+                    { question: "Find the ratio of: Oranges to the total number of fruits", correctAnswer: "3:15" },
+                    { question: "Find the ratio of: Bananas to the total number of fruits", correctAnswer: "7:15" }
+                ]
+            },
+            {
+                scenario: "There are 12 boys and 18 girls in a class.",
+                questions: [
+                    { question: "Find the ratio of: Boys to girls", correctAnswer: "12:18" },
+                    { question: "Find the ratio of: Girls to boys", correctAnswer: "18:12" },
+                    { question: "Find the ratio of: Boys to the total number of students", correctAnswer: "12:30" },
+                    { question: "Find the ratio of: Girls to the total number of students", correctAnswer: "18:30" }
+                ]
+            },
+            {
+                scenario: "A recipe uses 4 cups of flour and 2 cups of sugar.",
+                questions: [
+                    { question: "Find the ratio of: Flour to sugar", correctAnswer: "4:2" },
+                    { question: "Find the ratio of: Sugar to flour", correctAnswer: "2:4" },
+                    { question: "Find the ratio of: Flour to the total amount of ingredients", correctAnswer: "4:6" },
+                    { question: "Find the ratio of: Sugar to the total amount of ingredients", correctAnswer: "2:6" }
+                ]
+            },
+            {
+                scenario: "A garden has 10 rose bushes and 5 tulip plants.",
+                questions: [
+                    { question: "Find the ratio of: Rose bushes to tulip plants", correctAnswer: "10:5" },
+                    { question: "Find the ratio of: Tulip plants to rose bushes", correctAnswer: "5:10" },
+                    { question: "Find the ratio of: Rose bushes to the total number of plants", correctAnswer: "10:15" },
+                    { question: "Find the ratio of: Tulip plants to the total number of plants", correctAnswer: "5:15" }
+                ]
+            },
+            {
+                scenario: "A box contains 6 green marbles and 14 blue marbles.",
+                questions: [
+                    { question: "Find the ratio of: Green marbles to blue marbles", correctAnswer: "6:14" },
+                    { question: "Find the ratio of: Blue marbles to green marbles", correctAnswer: "14:6" },
+                    { question: "Find the ratio of: Green marbles to the total number of marbles", correctAnswer: "6:20" },
+                    { question: "Find the ratio of: Blue marbles to the total number of marbles", correctAnswer: "14:20" }
+                ]
+            },
+            {
+                scenario: "A shelf has 15 fiction books and 10 non-fiction books.",
+                questions: [
+                    { question: "Find the ratio of: Fiction books to non-fiction books", correctAnswer: "15:10" },
+                    { question: "Find the ratio of: Non-fiction books to fiction books", correctAnswer: "10:15" },
+                    { question: "Find the ratio of: Fiction books to the total number of books", correctAnswer: "15:25" },
+                    { question: "Find the ratio of: Non-fiction books to the total number of books", correctAnswer: "10:25" }
+                ]
+            },
+            {
+                scenario: "A pet store has 8 cats and 12 dogs.",
+                questions: [
+                    { question: "Find the ratio of: Cats to dogs", correctAnswer: "8:12" },
+                    { question: "Find the ratio of: Dogs to cats", correctAnswer: "12:8" },
+                    { question: "Find the ratio of: Cats to the total number of pets", correctAnswer: "8:20" },
+                    { question: "Find the ratio of: Dogs to the total number of pets", correctAnswer: "12:20" }
+                ]
+            },
+            {
+                scenario: "A parking lot has 9 cars and 3 trucks.",
+                questions: [
+                    { question: "Find the ratio of: Cars to trucks", correctAnswer: "9:3" },
+                    { question: "Find the ratio of: Trucks to cars", correctAnswer: "3:9" },
+                    { question: "Find the ratio of: Cars to the total number of vehicles", correctAnswer: "9:12" },
+                    { question: "Find the ratio of: Trucks to the total number of vehicles", correctAnswer: "3:12" }
+                ]
+            },
+            {
+                scenario: "A classroom has 6 tables and 18 chairs.",
+                questions: [
+                    { question: "Find the ratio of: Tables to chairs", correctAnswer: "6:18" },
+                    { question: "Find the ratio of: Chairs to tables", correctAnswer: "18:6" },
+                    { question: "Find the ratio of: Tables to the total number of items", correctAnswer: "6:24" },
+                    { question: "Find the ratio of: Chairs to the total number of items", correctAnswer: "18:24" }
+                ]
+            }
+        ];
+
+        function startGame() {
+            scenarios = scenarios.sort(() => Math.random() - 0.5);
+            const playerName = document.getElementById("player-name").value.trim();
+            if (!playerName) {
+                alert("Please enter your name to start.");
+                return;
+            }
+            document.getElementById("name-prompt").style.display = "none";
+            document.getElementById("player-name").style.display = "none";
+
+            currentScenarioIndex = 0;
+            currentQuestionIndex = 0;
+            correctAnswers = 0;
+            document.getElementById("start-button").style.display = "none";
+            document.getElementById("questions-area").style.display = "block";
+            document.getElementById("total-score").style.display = "block";
+            loadScenario();
+        }
+
+        function loadScenario() {
+            
+            const scenario = scenarios[currentScenarioIndex];
+            document.getElementById("scenario").innerText = scenario.scenario;
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            const scenario = scenarios[currentScenarioIndex];
+            const question = scenario.questions[currentQuestionIndex];
+            document.getElementById("question").innerText = `Q${currentQuestionIndex + 1}. ${question.question}`;
+            document.getElementById("feedback").innerText = "";
+            document.getElementById("feedback").className = "feedback";
+            document.getElementById("answer").value = "";
+            document.getElementById("answer").focus();
+            document.getElementById("answer").addEventListener("keydown", function(event) {
+                if (event.key === "Enter") {
+                    submitAnswer();
+                }
+            });
+            document.getElementById("question-number").innerText = currentQuestionIndex + 1;
+            document.getElementById("scenario-number").innerText = currentScenarioIndex + 1;
+        }
+
+        function submitAnswer() {
+            const scenario = scenarios[currentScenarioIndex];
+            const question = scenario.questions[currentQuestionIndex];
+            const userAnswer = document.getElementById("answer").value.trim();
+
+            if (userAnswer === question.correctAnswer) {
+                document.getElementById("feedback").innerText = "Correct!";
+                document.getElementById("feedback").className = "feedback correct";
+                
+                
+            }
+                correctAnswers++;
+            document.getElementById("total-correct").innerText = correctAnswers;
+            if (correctAnswers >= 15) {
+                setTimeout(() => {
+                    alert('🎉 Congratulations! You have correctly answered 15 questions in a row! 🎉');
+                    endGame();
+                }, 100);
+            }
+            } else {
+                document.getElementById("feedback").innerText = `Incorrect. The correct answer is ${question.correctAnswer}.`;
+                document.getElementById("feedback").className = "feedback incorrect";
+            }
+
+            currentQuestionIndex++;
+            if (currentQuestionIndex < 4) {
+                loadQuestion();
+            } else {
+                currentQuestionIndex = 0;
+                currentScenarioIndex++;
+                if (currentScenarioIndex < scenarios.length) {
+                    currentQuestionIndex = 0;
+                    loadScenario();
+                } else {
+                    endGame();
+                }
+            }
+        }
+
+        function endGame() {
+            
+            document.getElementById("questions-area").style.display = "none";
+            document.getElementById("scenario").innerText = `Game Over! You answered ${correctAnswers} out of 40 questions correctly.`;
+            document.getElementById("start-button").style.display = "block";
+            document.getElementById("start-button").innerText = "Play Again";
+        }
+
+        document.getElementById("start-button").addEventListener("click", startGame);
+        document.getElementById("submit-button").addEventListener("click", submitAnswer);
+    </script>
+</body>
+</html>
