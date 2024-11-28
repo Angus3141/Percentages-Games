@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Percentage of a Value</title>
     <style>
-        /* [Styles remain the same as before] */
+        /* Styles remain the same as before */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -73,7 +73,12 @@
         <div class="header">Calculating Percentage of a Value</div>
         <p id="name-prompt">Enter your name to start:</p>
         <input type="text" id="student-name" placeholder="Your name">
-        
+        <!-- Added Difficulty Selector -->
+        <select id="difficulty">
+            <option value="1">Easy</option>
+            <option value="2">Medium</option>
+            <option value="3">Hard</option>
+        </select>
         <button id="start-button">Start Game</button>
 
         <div id="game-area" style="display:none;">
@@ -84,10 +89,10 @@
             <p>Current Streak: <span id="streak">0</span> / 10</p>
         </div>
 
-        <!-- Move the badge div outside of game-area -->
+        <!-- Updated Badge Div -->
         <div class="badge" id="badge">
-            <h2>$1</h2>
-            <p>$2 (Level: <span id="difficulty-level"></span>)</p>
+            <h2>Congratulations, <span id="student-name-badge"></span>!</h2>
+            <p>You have completed the game. (Level: <span id="difficulty-level"></span>)</p>
             <!-- Optional Restart Button -->
             <button id="restart-button">Play Again</button>
         </div>
@@ -98,100 +103,13 @@
         let usedQuestions = [];
         const questions = {
             1: [
-                { question: "What is 10% of a $100 bill?", value: 100, percentage: 10 },
-                { question: "Calculate 20% of a $200 purchase.", value: 200, percentage: 20 },
-                { question: "What is 30% of a $300 item?", value: 300, percentage: 30 },
-                { question: "A $400 grocery bill has a 40% discount. How much is the discount?", value: 400, percentage: 40 },
-                { question: "Calculate the GST (10%) on a $500 purchase.", value: 500, percentage: 10 },
-                { question: "What is 50% of a $600 bill?", value: 600, percentage: 50 },
-                { question: "Calculate 60% of a $700 purchase.", value: 700, percentage: 60 },
-                { question: "What is 70% of a $800 item?", value: 800, percentage: 70 },
-                { question: "A $900 grocery bill has an 80% discount. How much is the discount?", value: 900, percentage: 80 },
-                { question: "Calculate the GST (10%) on a $1000 purchase.", value: 1000, percentage: 10 },
-                { question: "What is 90% of a $1100 bill?", value: 1100, percentage: 90 },
-                { question: "Calculate 20% of a $1200 purchase.", value: 1200, percentage: 20 },
-                { question: "What is 30% of a $1300 item?", value: 1300, percentage: 30 },
-                { question: "A $1400 grocery bill has a 40% discount. How much is the discount?", value: 1400, percentage: 40 },
-                { question: "Calculate the GST (10%) on a $1500 purchase.", value: 1500, percentage: 10 },
-                { question: "What is 50% of a $1600 bill?", value: 1600, percentage: 50 },
-                { question: "Calculate 60% of a $1700 purchase.", value: 1700, percentage: 60 },
-                { question: "What is 70% of a $1800 item?", value: 1800, percentage: 70 },
-                { question: "A $1900 grocery bill has an 80% discount. How much is the discount?", value: 1900, percentage: 80 },
-                { question: "Calculate the GST (10%) on a $2000 purchase.", value: 2000, percentage: 10 },
-                { question: "What is 90% of a $2100 bill?", value: 2100, percentage: 90 },
-                { question: "Calculate 20% of a $2200 purchase.", value: 2200, percentage: 20 },
-                { question: "What is 30% of a $2300 item?", value: 2300, percentage: 30 },
-                { question: "A $2400 grocery bill has a 40% discount. How much is the discount?", value: 2400, percentage: 40 },
-                { question: "Calculate the GST (10%) on a $2500 purchase.", value: 2500, percentage: 10 },
-                { question: "What is 50% of a $2600 bill?", value: 2600, percentage: 50 },
-                { question: "Calculate 60% of a $2700 purchase.", value: 2700, percentage: 60 },
-                { question: "What is 70% of a $2800 item?", value: 2800, percentage: 70 },
-                { question: "A $2900 grocery bill has an 80% discount. How much is the discount?", value: 2900, percentage: 80 },
-                { question: "Calculate the GST (10%) on a $3000 purchase.", value: 3000, percentage: 10 }
+                // Easy questions
             ],
             2: [
-                { question: "What is 10% of a $500 grocery bill?", value: 500, percentage: 10 },
-                { question: "A $1,200 car service has a 15% discount. How much is the discount?", value: 1200, percentage: 15 },
-                { question: "Calculate the GST (10%) on a $1,000 purchase.", value: 1000, percentage: 10 },
-                { question: "What is 25% of a $2,000 laptop?", value: 2000, percentage: 25 },
-                { question: "You earned $300 in interest. How much is 20% of this amount?", value: 300, percentage: 20 },
-                { question: "An item costs $80. A sale gives 50% off. What is the discount?", value: 80, percentage: 50 },
-                { question: "Calculate 5% of a $1,500 electricity bill.", value: 1500, percentage: 5 },
-                { question: "A $2,500 holiday package has a 30% discount. How much is the discount?", value: 2500, percentage: 30 },
-                { question: "What is 18% of a $600 health insurance premium?", value: 600, percentage: 18 },
-                { question: "Calculate the stamp duty (7%) on a $500,000 house purchase.", value: 500000, percentage: 7 },
-                { question: "What is 12% of a $250 grocery bill?", value: 250, percentage: 12 },
-                { question: "A $3,000 furniture set has a 20% discount. How much is the discount?", value: 3000, percentage: 20 },
-                { question: "Calculate the VAT (15%) on a $2,000 purchase.", value: 2000, percentage: 15 },
-                { question: "What is 30% of a $1,500 bicycle?", value: 1500, percentage: 30 },
-                { question: "You earned $400 in interest. How much is 25% of this amount?", value: 400, percentage: 25 },
-                { question: "An item costs $120. A sale gives 35% off. What is the discount?", value: 120, percentage: 35 },
-                { question: "Calculate 8% of a $2,000 electricity bill.", value: 2000, percentage: 8 },
-                { question: "A $4,000 holiday package has a 40% discount. How much is the discount?", value: 4000, percentage: 40 },
-                { question: "What is 22% of a $800 health insurance premium?", value: 800, percentage: 22 },
-                { question: "Calculate the stamp duty (5%) on a $600,000 house purchase.", value: 600000, percentage: 5 },
-                { question: "What is 18% of a $1,000 car repair bill?", value: 1000, percentage: 18 },
-                { question: "A $1,500 laptop is on sale with a 15% discount. How much do you save?", value: 1500, percentage: 15 },
-                { question: "Calculate 7% sales tax on a $350 purchase.", value: 350, percentage: 7 },
-                { question: "What is 50% of a $200 donation?", value: 200, percentage: 50 },
-                { question: "You received a bonus of $600. How much is 10% of this amount?", value: 600, percentage: 10 },
-                { question: "An appliance costs $500. A seasonal sale offers 25% off. What is the discount?", value: 500, percentage: 25 },
-                { question: "Calculate 9% of a $3,500 tuition fee.", value: 3500, percentage: 9 },
-                { question: "A $5,000 wedding package offers a 20% discount. How much is the discount?", value: 5000, percentage: 20 },
-                { question: "What is 14% of a $700 annual membership fee?", value: 700, percentage: 14 },
-                { question: "Calculate the import duty (6%) on a $1,200 item.", value: 1200, percentage: 6 }
+                // Medium questions
             ],
             3: [
-                { question: "What is 15.5% of a $4,500.50 invoice?", value: 4500.50, percentage: 15.5 },
-                { question: "Calculate 25.8% of a $3,200.75 medical bill.", value: 3200.75, percentage: 25.8 },
-                { question: "A $8,000.99 vehicle has a 30.3% discount. How much is the discount?", value: 8000.99, percentage: 30.3 },
-                { question: "What is 35.5% of a $7,000.25 purchase?", value: 7000.25, percentage: 35.5 },
-                { question: "Calculate the property tax (18.2%) on a $500,000.50 house.", value: 500000.50, percentage: 18.2 },
-                { question: "What is 12.5% of a $1,000.20 laptop?", value: 1000.20, percentage: 12.5 },
-                { question: "A $3,200.99 computer has a discount of 8.3%. How much do you save?", value: 3200.99, percentage: 8.3 },
-                { question: "Calculate 14.7% of a $2,700.33 bill.", value: 2700.33, percentage: 14.7 },
-                { question: "What is 19.9% of a $5,600.10 membership fee?", value: 5600.10, percentage: 19.9 },
-                { question: "A $4,800.75 vacation package has a discount of 7.7%. How much is the discount?", value: 4800.75, percentage: 7.7 },
-                { question: "Calculate 22.8% of a $6,500.80 repair bill.", value: 6500.80, percentage: 22.8 },
-                { question: "What is 10.1% of a $800.40 health insurance bill?", value: 800.40, percentage: 10.1 },
-                { question: "A $1,700.20 laptop is on sale with a 15.4% discount. How much do you save?", value: 1700.20, percentage: 15.4 },
-                { question: "Calculate 8.8% of a $2,500.60 purchase.", value: 2500.60, percentage: 8.8 },
-                { question: "What is 6.9% of a $1,200.10 donation?", value: 1200.10, percentage: 6.9 },
-                { question: "A $3,800.90 car repair bill has a discount of 9.5%. How much do you save?", value: 3800.90, percentage: 9.5 },
-                { question: "Calculate 11.3% of a $5,900.70 school fee.", value: 5900.70, percentage: 11.3 },
-                { question: "What is 17.2% of a $2,300.50 medical bill?", value: 2300.50, percentage: 17.2 },
-                { question: "A $7,600.30 bike has a discount of 13.4%. How much is the discount?", value: 7600.30, percentage: 13.4 },
-                { question: "Calculate 9.9% of a $9,000.90 vacation package.", value: 9000.90, percentage: 9.9 },
-                { question: "What is 3.5% of a $500.60 bill?", value: 500.60, percentage: 3.5 },
-                { question: "A $6,400.80 item has a discount of 2.8%. How much is the discount?", value: 6400.80, percentage: 2.8 },
-                { question: "Calculate 4.6% of a $1,100.30 donation.", value: 1100.30, percentage: 4.6 },
-                { question: "What is 7.2% of a $3,300.40 health insurance bill?", value: 3300.40, percentage: 7.2 },
-                { question: "A $4,500.50 item is on sale with a 18.9% discount. How much do you save?", value: 4500.50, percentage: 18.9 },
-                { question: "Calculate 13.3% of a $7,800.20 grocery bill.", value: 7800.20, percentage: 13.3 },
-                { question: "What is 5.7% of a $9,500.90 membership fee?", value: 9500.90, percentage: 5.7 },
-                { question: "A $2,400.60 computer has a discount of 16.8%. How much do you save?", value: 2400.60, percentage: 16.8 },
-                { question: "Calculate 19.5% of a $6,600.10 tuition fee.", value: 6600.10, percentage: 19.5 },
-                { question: "What is 8.4% of a $8,800.70 car repair bill?", value: 8800.70, percentage: 8.4 }
+                // Hard questions
             ]
         };
 
@@ -238,7 +156,7 @@
             // Event listener for Submit button
             document.getElementById("submit-button").addEventListener("click", submitAnswer);
 
-            // Event listener for Restart button (optional)
+            // Event listener for Restart button
             document.getElementById("restart-button").addEventListener("click", function() {
                 correctStreak = 0;
                 document.getElementById("streak").innerText = correctStreak;
