@@ -2,232 +2,432 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Compare One Value to Another, Using Percentage</title>
+    <title>Percentage Calculations Assessment</title>
     <style>
-        /* Styles remain largely the same */
+        /* Your existing CSS styles */
         body {
             font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f0f8ff;
         }
-        .game-container {
-            text-align: center;
-            background: white;
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: auto;
+            overflow: hidden;
             padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            max-width: 400px;
-            width: 100%;
-        }
-        .header {
-            background-color: #007bff;
-            color: white;
-            padding: 15px 0;
-            font-size: 20px;
-            border-radius: 8px 8px 0 0;
-        }
-        input[type="text"], button {
-            font-size: 16px;
-            margin: 10px;
-            padding: 10px;
-            width: calc(100% - 20px);
+            background: #fff;
+            margin-top: 30px;
             border-radius: 5px;
-            border: 1px solid #ccc;
         }
-        button {
-            background-color: #007bff;
-            color: white;
+        h1, h2 {
+            text-align: center;
+        }
+        .question {
+            margin-bottom: 20px;
+        }
+        .question h3 {
+            margin-bottom: 10px;
+        }
+        .question input {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+        }
+        #submitBtn, #nextBtn, #playAgainBtn, #prestigeBtn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background: #28a745;
+            color: #fff;
             border: none;
+            font-size: 18px;
             cursor: pointer;
+            margin-top: 20px;
+            border-radius: 5px;
         }
-        button:hover {
-            background-color: #0056b3;
+        #nextBtn {
+            background: #007bff;
+        }
+        #playAgainBtn, #prestigeBtn {
+            background: #007bff;
+        }
+        #results {
+            margin-top: 30px;
         }
         .badge {
-            display: none;
-            margin-top: 20px;
-            background-color: #ffeb3b;
-            padding: 20px;
-            border-radius: 10px;
             text-align: center;
-            color: #000;
+            margin-top: 20px;
         }
-        .feedback {
-            margin: 10px 0;
+        .badge img {
+            width: 150px;
         }
-        .feedback.correct {
-            color: #28a745;
+        .skill-list {
+            margin-top: 20px;
         }
-        .feedback.incorrect {
-            color: #dc3545;
+        .skill-list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .skill-list li {
+            background: #f8d7da;
+            color: #721c24;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-left: 5px solid #f5c6cb;
+        }
+        #scoreCounter {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 20px;
+        }
+        #feedback {
+            text-align: center;
+            font-size: 18px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <div class="header">Find the Percentage Challenge</div>
-        <p id="name-prompt">Enter your name to start:</p>
-        <input type="text" id="student-name" placeholder="Your name">
-        <button id="start-button">Start Game</button>
-        
-        <div id="game-area" style="display:none;">
-            <p id="question"></p>
-            <input type="text" id="answer" placeholder="Your answer">
-            <button id="submit-button">Submit</button>
-            <p id="feedback" class="feedback"></p>
-            <p>Current Streak: <span id="streak">0</span> / 10</p>
-        </div>
 
-        <!-- Moved the badge div outside of game-area -->
-        <div class="badge" id="badge">
-            <h2>🏆 Congratulations, <span id="student-name-badge"></span>! 🏆</h2>
-            <p>You compared one value to another using percentages ten times consecutively!</p>
+<div class="container">
+    <h1>Cumulative Percentage Calculations Assessment</h1>
+    <div id="game">
+        <div id="instructions">
+            <p>
+                Welcome to your cumulative assessment on percentage calculations! Complete all fifteen questions in a set correctly to earn a <strong>Percentage Pro Badge</strong>. If you miss any questions, we'll guide you on which skills to practice before trying again with a new set of questions.
+            </p>
         </div>
+        <div id="nameContainer">
+            <p>Please enter your name to begin:</p>
+            <input type="text" id="studentName" placeholder="Enter your name">
+            <button id="startBtn">Start Assessment</button>
+        </div>
+        <div id="questionContainer" style="display: none;"></div>
+        <div id="feedback"></div>
+        <div id="scoreCounter"></div>
+        <button id="submitBtn" style="display: none;">Submit Answer</button>
+        <button id="nextBtn" style="display: none;">Next Question</button>
     </div>
-    <script>
-        let currentQuestion = {};
-        let correctStreak = 0;
-        let usedQuestions = [];
-        const questions = [
-            { question: "What percentage is $50 of $500?", part: 50, whole: 500 },
-            { question: "What percentage is $10 of $450?", part: 10, whole: 450 },
-            { question: "A $25 donation was made to a $1,000 fundraiser. What percentage is this?", part: 25, whole: 1000 },
-            { question: "You spent $120 on a $600 phone. What percentage is this?", part: 120, whole: 600 },
-            { question: "Calculate what percentage $200 is of a $1,200 vacation package.", part: 200, whole: 1200 },
-            { question: "Your rent is $1,800, and your salary is $6,000. What percentage is your rent?", part: 1800, whole: 6000 },
-            { question: "What percentage is a $300 deposit of a $15,000 home purchase?", part: 300, whole: 15000 },
-            { question: "You saved $100 from a $2,000 salary. What percentage is this?", part: 100, whole: 2000 },
-            { question: "A $15 tip was given for a $200 meal. What percentage is this?", part: 15, whole: 200 },
-            { question: "You read 45 pages of a 300-page book. What percentage is this?", part: 45, whole: 300 },
-            { question: "You scored 85 points out of a possible 100 on a test. What percentage is this?", part: 85, whole: 100 },
-            { question: "A $150 payment was made on a $1,500 loan. What percentage is this?", part: 150, whole: 1500 },
-            { question: "You drank 2 liters of water from a 10-liter container. What percentage have you consumed?", part: 2, whole: 10 },
-            { question: "An employee worked 35 hours out of a 40-hour workweek. What percentage of the week did they work?", part: 35, whole: 40 },
-            { question: "You completed 75 out of 300 survey responses. What percentage is this?", part: 75, whole: 300 },
-            { question: "A car traveled 120 miles out of a 600-mile journey. What percentage of the journey is completed?", part: 120, whole: 600 },
-            { question: "You used 250 MB of your 2000 MB data plan. What percentage of your data have you used?", part: 250, whole: 2000 },
-            { question: "You have $400 saved towards a goal of $2,000. What percentage of your goal have you saved?", part: 400, whole: 2000 },
-            { question: "A factory produced 500 defective items out of 50,000 total items. What percentage is defective?", part: 500, whole: 50000 },
-            { question: "You spent $30 out of your $200 budget. What percentage have you spent?", part: 30, whole: 200 },
-            { question: "A student answered 18 questions correctly out of 20. What percentage did they get right?", part: 18, whole: 20 },
-            { question: "An athlete ran 5 km of a 42 km marathon. What percentage of the marathon have they completed?", part: 5, whole: 42 },
-            { question: "You have read 150 pages of a 600-page book. What percentage have you read?", part: 150, whole: 600 },
-            { question: "A company sold 2,000 units out of 10,000 units in stock. What percentage have they sold?", part: 2000, whole: 10000 },
-            { question: "You have completed 7 out of 14 tasks on your to-do list. What percentage is complete?", part: 7, whole: 14 },
-            { question: "A battery has 25% charge remaining out of 100%. What percentage has been used?", part: 75, whole: 100 },
-            { question: "You paid $500 of your $2,500 credit card debt. What percentage have you paid off?", part: 500, whole: 2500 },
-            { question: "A store sold 80 out of 400 items on sale. What percentage is this?", part: 80, whole: 400 },
-            { question: "You walked 3 miles out of a planned 15-mile hike. What percentage have you completed?", part: 3, whole: 15 },
-            { question: "An investor owns 5,000 shares out of 100,000 total shares. What percentage do they own?", part: 5000, whole: 100000 },
-        ];
+    <div id="results"></div>
+</div>
 
-        // Positive feedback messages
-        const positiveFeedbackMessages = [
-            "Excellent work!",
-            "Great job!",
-            "Well done!",
-            "You're correct!",
-            "That's right!",
-            "Fantastic!",
-            "You're doing great!",
-            "Keep it up!",
-            "Spot on!",
-            "You nailed it!",
-        ];
+<script>
+// Question Banks
+const questionBanks =[
+    [
+        { question: "The price of a jacket is $120. If a 25% discount is applied, what is the new price?", skill: "CPD", answer: 90 },
+        { question: "Out of 400 students in a school, 35% are in Year 9. How many students are in Year 9?", skill: "CPV", answer: 140 },
+        { question: "A class has 50 students, and 18 are boys. What percentage are girls?", skill: "CPP", answer: 64 },
+        { question: "A tank holds 600 litres, and it is 70% full. How much water is in the tank?", skill: "CPV", answer: 420 },
+        { question: "A product was $90 but is now $63. What percentage discount was given?", skill: "CPD%", answer: 30 },
+        { question: "A car travels 120 km, which is 30% of its total journey. What is the total distance?", skill: "CWT", answer: 400 },
+        { question: "A school has 1,200 students. If 75% wear uniforms, how many do not wear uniforms?", skill: "CPV", answer: 300 },
+        { question: "Increase $400 by 15%. What is the new amount?", skill: "CPI", answer: 460 },
+        { question: "A recipe requires 25% of its total weight in sugar. If the total weight is 800 g, how much sugar is needed?", skill: "CPV", answer: 200 },
+        { question: "A team plays 20 matches and wins 14. What percentage of matches did they lose?", skill: "CPP", answer: 30 },
+        { question: "A laptop costs $900 after a 20% discount. What was the original price?", skill: "CWD", answer: 1125 },
+        { question: "If a person earns $1,500 a month and spends 60% on expenses, how much money is left?", skill: "CPV", answer: 600 },
+        { question: "A shop sells 45 out of 60 toys on sale. What percentage of toys were sold?", skill: "CPP", answer: 75 },
+        { question: "A price increased from $80 to $96. What is the percentage increase?", skill: "CPI", answer: 20 },
+        { question: "Out of 500 survey participants, 350 prefer tea over coffee. What percentage prefers tea?", skill: "CPP", answer: 70 }
+    ],
+    [
+        { question: "A person saves $120 a month, which is 20% of their monthly income. What is their monthly income?", skill: "CWT", answer: 600 },
+        { question: "Out of 800 attendees at a concert, 60% were adults. How many were adults?", skill: "CPV", answer: 480 },
+        { question: "A football team scored 12 goals in a season and conceded 18. What percentage of goals were scored by the team?", skill: "CPP", answer: 40 },
+        { question: "A bottle of juice is 1.5 litres, but 30% has been consumed. How much juice remains?", skill: "CPV", answer: 1.05 },
+        { question: "A shop sells 300 shirts, and 90 are blue. What percentage are blue?", skill: "CPP", answer: 30 },
+        { question: "A house costs $400,000. If the price increases by 5%, what is the new price?", skill: "CPI", answer: 420000 },
+        { question: "A school has 1,000 students, and 250 are in Year 7. What percentage are not in Year 7?", skill: "CPP", answer: 75 },
+        { question: "A student scored 18 marks out of 20 in one test and 45 out of 50 in another. Which test had the higher percentage score?", skill: "CPP", answer: "Both tests are equal at 90%" },
+        { question: "The price of a pair of shoes is $200, but a discount of 15% is applied. What is the discounted price?", skill: "CPD", answer: 170 },
+        { question: "A fruit basket contains 60% apples, 30% bananas, and 10% oranges. If there are 300 fruits, how many are bananas?", skill: "CPV", answer: 90 },
+        { question: "A train travels 90 km, which is 45% of its total journey. How long is the entire journey?", skill: "CWT", answer: 200 },
+        { question: "A car is 60% full, and its tank can hold 50 litres. How much fuel is in the tank?", skill: "CPV", answer: 30 },
+        { question: "A class has 25 students, and 20 are present today. What percentage are absent?", skill: "CPP", answer: 20 },
+        { question: "A shop sells a product for $150 after a 20% discount. What was the original price?", skill: "CWD", answer: 187.5 },
+        { question: "A team wins 18 matches out of 25. What percentage of matches did they lose?", skill: "CPP", answer: 28 }
+    ],
+    [
+        { question: "A television is priced at $1,000, but a 12% discount is offered. What is the final price?", skill: "CPD", answer: 880 },
+        { question: "A class of 40 students has 75% attendance. How many students are present?", skill: "CPV", answer: 30 },
+        { question: "A farmer has 500 kg of grain, and 20% is spoiled. How much grain is usable?", skill: "CPV", answer: 400 },
+        { question: "If 1,200 people attend an event and 45% are children, how many are not children?", skill: "CPV", answer: 660 },
+        { question: "A price increases from $500 to $575. What is the percentage increase?", skill: "CPI", answer: 15 },
+        { question: "A student scored 36 out of 50 marks in a test. What percentage did they score?", skill: "CPP", answer: 72 },
+        { question: "A car’s fuel tank has a capacity of 80 litres. If it is 60% full, how many litres are in the tank?", skill: "CPV", answer: 48 },
+        { question: "Out of 300 survey respondents, 120 prefer option A. What percentage prefers option A?", skill: "CPP", answer: 40 },
+        { question: "A $1,000 loan is repaid with 8% interest. How much interest is paid?", skill: "CPV", answer: 80 },
+        { question: "A class has 30 students, and 12 are boys. What percentage are girls?", skill: "CPP", answer: 60 },
+        { question: "A company’s revenue increased from $250,000 to $300,000. What is the percentage increase?", skill: "CPI", answer: 20 },
+        { question: "A water tank is 70% full and holds 700 litres of water. How much is the full capacity?", skill: "CWT", answer: 1000 },
+        { question: "A player scored 48 runs out of 60 balls faced. What percentage of balls resulted in runs?", skill: "CPP", answer: 80 },
+        { question: "Out of 600 products, 75% were sold in a sale. How many products were not sold?", skill: "CPV", answer: 150 },
+        { question: "A box contains 40 chocolates, 60% of which are dark chocolate. How many are milk chocolate?", skill: "CPV", answer: 16 }
+    ],
+    [
+        { question: "A pair of shoes costs $120 after a 25% discount. What was the original price?", skill: "CWD", answer: 160 },
+        { question: "If a $450 watch is on sale with a 20% discount, what is the discounted price?", skill: "CPD", answer: 360 },
+        { question: "A fruit basket contains 80 fruits, and 50% are apples. How many fruits are not apples?", skill: "CPV", answer: 40 },
+        { question: "A salary increases from $2,000 to $2,400. What is the percentage increase?", skill: "CPI", answer: 20 },
+        { question: "A class of 50 students has 80% attendance. How many students are absent?", skill: "CPP", answer: 10 },
+        { question: "A school has 900 students, and 35% are in Year 10. How many students are in Year 10?", skill: "CPV", answer: 315 },
+        { question: "A car’s tank can hold 60 litres of fuel. If it is 75% full, how much fuel is in the tank?", skill: "CPV", answer: 45 },
+        { question: "A shop sells 240 items in a day, and 60% are electronics. How many items are not electronics?", skill: "CPV", answer: 96 },
+        { question: "A test has 120 marks, and a student scores 72 marks. What percentage did they score?", skill: "CPP", answer: 60 },
+        { question: "A population increased from 500,000 to 525,000. What is the percentage increase?", skill: "CPI", answer: 5 },
+        { question: "A bottle contains 1.2 litres of juice. If 25% is consumed, how much juice is left?", skill: "CPV", answer: 0.9 },
+        { question: "A class has 40 students, and 32 passed an exam. What percentage failed?", skill: "CPP", answer: 20 },
+        { question: "A recipe requires 200 grams of sugar, which is 20% of the total weight. What is the total weight?", skill: "CWT", answer: 1000 },
+        { question: "A bike was sold for $800 after a 20% discount. What was the original price?", skill: "CWD", answer: 1000 },
+        { question: "A team won 9 matches out of 12 in a season. What percentage did they lose?", skill: "CPP", answer: 25 }
+    ]
+]
 
-        // Event listener for Start Game button
-        document.getElementById("start-button").addEventListener("click", startGame);
 
-        function startGame() {
-            const name = document.getElementById("student-name").value.trim();
-            if (!name) {
-                alert("Please enter your name to start.");
-                return;
-            }
-            document.getElementById("name-prompt").style.display = "none";
-            document.getElementById("student-name").style.display = "none";
-            document.getElementById("start-button").style.display = "none";
-            document.getElementById("game-area").style.display = "block";
-            document.getElementById("student-name-badge").innerText = name;
-            generateQuestion();
+let currentBankIndex = 0;
+let currentQuestionIndex = 0;
+let studentName = '';
+let prestigeLevel = 1;
+let score = 0; // Added score variable
 
-            // Event listener for Enter key in the answer input field
-            document.getElementById("answer").addEventListener("keypress", function(event) {
-                if (event.key === "Enter") {
-                    event.preventDefault();
-                    submitAnswer();
+const nameContainer = document.getElementById('nameContainer');
+const questionContainer = document.getElementById('questionContainer');
+const submitBtn = document.getElementById('submitBtn');
+const nextBtn = document.getElementById('nextBtn');
+const resultsDiv = document.getElementById('results');
+const startBtn = document.getElementById('startBtn');
+const scoreCounter = document.getElementById('scoreCounter');
+const feedbackDiv = document.getElementById('feedback');
+
+const incorrectSkills = new Set();
+const skillLegend = {
+    'CPD': 'Calculate Price After Discount',
+    'CPI': 'Calculate Percentage Increase',
+    'CPP': 'Calculate Percentage of a Part',
+    'CPV': 'Calculate Value from Percentage',
+    'CWT': 'Calculate the Whole Total',
+    'CPD%': 'Calculate the Percentage Discount',
+    'CWD': 'Calculate Whole from Discounted Price'
+};
+
+// Start Button Event Listener
+startBtn.addEventListener('click', () => {
+    studentName = document.getElementById('studentName').value;
+    if (studentName.trim() !== '') {
+        nameContainer.style.display = 'none';
+        questionContainer.style.display = 'block';
+        submitBtn.style.display = 'block';
+        scoreCounter.style.display = 'block';
+        feedbackDiv.style.display = 'none';
+        score = 0; // Reset score
+        updateScore();
+        displayQuestion();
+    } else {
+        alert('Please enter your name to start the assessment.');
+    }
+});
+
+// Allow Enter Key to Start
+document.getElementById('studentName').addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+        startBtn.click();
+    }
+});
+
+// Display Question Function
+function displayQuestion() {
+    questionContainer.innerHTML = '';
+    feedbackDiv.innerHTML = '';
+    feedbackDiv.style.display = 'none';
+    const currentBank = questionBanks[currentBankIndex];
+    const q = currentBank[currentQuestionIndex];
+    const questionDiv = document.createElement('div');
+    questionDiv.classList.add('question');
+    questionDiv.innerHTML = `
+        <h3>Question ${currentQuestionIndex + 1}</h3>
+        <p>${q.question}</p>
+        <input type="number" step="any" id="answer" placeholder="Enter your answer">
+    `;
+    questionContainer.appendChild(questionDiv);
+
+    // Focus on the answer input
+    document.getElementById('answer').focus();
+
+    // Allow Enter Key to Submit Answer
+    document.getElementById('answer').addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            submitBtn.click();
+        }
+    });
+}
+
+// Update Score Function
+function updateScore() {
+    scoreCounter.innerHTML = `Score: ${score} / ${questionBanks[currentBankIndex].length}`;
+}
+
+// Check Answer Function
+function checkAnswer() {
+    const currentBank = questionBanks[currentBankIndex];
+    const q = currentBank[currentQuestionIndex];
+    const answerInput = document.getElementById('answer');
+    const userAnswer = parseFloat(answerInput.value);
+    const correctAnswer = parseFloat(q.answer);
+    feedbackDiv.style.display = 'block';
+
+    if (isNaN(userAnswer)) {
+        alert('Please enter a valid number.');
+        return;
+    }
+
+    if (Math.abs(userAnswer - correctAnswer) < 0.01) {
+        score++;
+        feedbackDiv.innerHTML = `<p style="color: green;">Correct!</p>`;
+    } else {
+        incorrectSkills.add(q.skill);
+        feedbackDiv.innerHTML = `<p style="color: red;">Incorrect. The correct answer was ${correctAnswer}.</p>`;
+    }
+
+    updateScore();
+    submitBtn.style.display = 'none';
+
+    if (currentQuestionIndex < currentBank.length - 1) {
+        nextBtn.style.display = 'block';
+        // Allow Enter Key to Move to Next Question
+        document.addEventListener('keyup', nextQuestionEnter);
+    } else {
+        // Last question, show results after a brief delay
+        setTimeout(showResults, 1000);
+    }
+}
+
+// Next Question Function
+function nextQuestion() {
+    currentQuestionIndex++;
+    feedbackDiv.style.display = 'none';
+    if (currentQuestionIndex < questionBanks[currentBankIndex].length) {
+        submitBtn.style.display = 'block';
+        nextBtn.style.display = 'none';
+        displayQuestion();
+        // Remove Enter Key Listener for Next Button
+        document.removeEventListener('keyup', nextQuestionEnter);
+    }
+}
+
+// Event Listener Function for Enter Key on Next Button
+function nextQuestionEnter(event) {
+    if (event.key === 'Enter') {
+        nextBtn.click();
+    }
+}
+
+// Show Results Function
+function showResults() {
+    let allCorrect = incorrectSkills.size === 0;
+    resultsDiv.innerHTML = '';
+    questionContainer.style.display = 'none';
+    submitBtn.style.display = 'none';
+    nextBtn.style.display = 'none';
+    feedbackDiv.style.display = 'none';
+    scoreCounter.style.display = 'none';
+
+    if (allCorrect) {
+        if (prestigeLevel < 5) {
+            resultsDiv.innerHTML = `
+                <div class="badge">
+                    <h2>🎉 Congratulations, ${studentName}! You've earned ${studentName}'s Percentage Pro Badge - Prestige Level ${prestigeLevel}!</h2>
+                </div>
+                <button id="prestigeBtn">Prestige to Level ${prestigeLevel + 1}</button>
+            `;
+            const prestigeBtn = document.getElementById('prestigeBtn');
+            prestigeBtn.addEventListener('click', prestige);
+
+            // Allow Enter Key to Prestige
+            document.addEventListener('keyup', function prestigeEnter(event) {
+                if (event.key === 'Enter') {
+                    prestigeBtn.click();
+                    document.removeEventListener('keyup', prestigeEnter);
                 }
             });
-
-            // Event listener for Submit button
-            document.getElementById("submit-button").addEventListener("click", submitAnswer);
+        } else {
+            resultsDiv.innerHTML = `
+                <div class="badge">
+                    <h2>🎉 Congratulations, ${studentName}! You've achieved ${studentName}'s Maximum Prestige Level 5 Badge!</h2>
+                </div>
+            `;
         }
+    } else {
+        let skillMessages = '';
+        incorrectSkills.forEach(skill => {
+            skillMessages += `<li>${skillLegend[skill]}</li>`;
+        });
+        resultsDiv.innerHTML = `
+            <h2>${studentName}, you missed some questions.</h2>
+            <p>Please review the following skills:</p>
+            <div class="skill-list">
+                <ul>${skillMessages}</ul>
+            </div>
+            <button id="playAgainBtn">Play Again</button>
+        `;
+        const playAgainBtn = document.getElementById('playAgainBtn');
+        playAgainBtn.addEventListener('click', playAgain);
 
-        function generateQuestion() {
-            if (usedQuestions.length === questions.length) {
-                usedQuestions = [];
+        // Allow Enter Key to Play Again
+        document.addEventListener('keyup', function playAgainEnter(event) {
+            if (event.key === 'Enter') {
+                playAgainBtn.click();
+                document.removeEventListener('keyup', playAgainEnter);
             }
+        });
+    }
+}
 
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * questions.length);
-            } while (usedQuestions.includes(randomIndex));
+// Prestige Function
+function prestige() {
+    prestigeLevel++;
+    currentQuestionIndex = 0;
+    incorrectSkills.clear();
+    resultsDiv.innerHTML = '';
+    questionContainer.style.display = 'block';
+    submitBtn.style.display = 'block';
+    scoreCounter.style.display = 'block';
+    score = 0; // Reset score
+    updateScore();
+    displayQuestion();
+}
 
-            usedQuestions.push(randomIndex);
-            currentQuestion = questions[randomIndex];
-            document.getElementById("question").innerText = currentQuestion.question;
-            document.getElementById("feedback").innerText = "";
-            document.getElementById("feedback").className = "feedback";
-            document.getElementById("answer").value = "";
-            document.getElementById("answer").focus();
+// Play Again Function
+function playAgain() {
+    resultsDiv.innerHTML = '';
+    currentQuestionIndex = 0;
+    incorrectSkills.clear();
+    prestigeLevel = 1;
+    currentBankIndex = (currentBankIndex + 1) % questionBanks.length;
+    questionContainer.style.display = 'block';
+    submitBtn.style.display = 'block';
+    scoreCounter.style.display = 'block';
+    score = 0; // Reset score
+    updateScore();
+    displayQuestion();
+}
+
+// Submit and Next Button Event Listeners
+submitBtn.addEventListener('click', checkAnswer);
+nextBtn.addEventListener('click', nextQuestion);
+
+// Allow Enter Key to Submit or Move to Next Question
+document.addEventListener('keyup', function(event) {
+    if (event.key === 'Enter') {
+        if (submitBtn.style.display === 'block') {
+            submitBtn.click();
+        } else if (nextBtn.style.display === 'block') {
+            nextBtn.click();
         }
-
-        function submitAnswer() {
-            const userAnswer = parseFloat(document.getElementById("answer").value.trim());
-            const correctAnswer = (currentQuestion.part / currentQuestion.whole) * 100;
-
-            if (isNaN(userAnswer)) {
-                document.getElementById("feedback").innerText = "Please enter a valid number.";
-                document.getElementById("feedback").className = "feedback incorrect";
-                return;
-            }
-
-            // Allow a small tolerance for floating-point errors
-            const tolerance = 0.01;
-            if (Math.abs(userAnswer - correctAnswer) <= tolerance) {
-                correctStreak++;
-
-                // Select a random positive feedback message
-                const positiveFeedback = positiveFeedbackMessages[Math.floor(Math.random() * positiveFeedbackMessages.length)];
-
-                document.getElementById("feedback").innerText = positiveFeedback;
-                document.getElementById("feedback").className = "feedback correct";
-                document.getElementById("streak").innerText = correctStreak;
-
-                if (correctStreak === 10) {
-                    displayBadge();
-                } else {
-                    generateQuestion();
-                }
-            } else {
-                correctStreak = 0;
-                document.getElementById("feedback").innerText = `Incorrect. Remember, you're performing a fraction to percentage conversion: (${currentQuestion.part} ÷ ${currentQuestion.whole}) × 100. Try again!`;
-                document.getElementById("feedback").className = "feedback incorrect";
-                document.getElementById("streak").innerText = correctStreak;
-                document.getElementById("answer").value = "";
-                document.getElementById("answer").focus();
-            }
-        }
-
-        function displayBadge() {
-            document.getElementById("badge").style.display = "block";
-            document.getElementById("game-area").style.display = "none";
-        }
-    </script>
+    }
+});
+</script>
 </body>
 </html>
