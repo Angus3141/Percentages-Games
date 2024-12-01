@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+         <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -35,7 +35,7 @@
             padding: 8px;
             font-size: 16px;
         }
-        #submitBtn, #nextBtn, #playAgainBtn, #prestigeBtn {
+        #submitBtn, #playAgainBtn, #prestigeBtn {
             display: block;
             width: 100%;
             padding: 10px;
@@ -46,9 +46,6 @@
             cursor: pointer;
             margin-top: 20px;
             border-radius: 5px;
-        }
-        #nextBtn {
-            background: #007bff;
         }
         #playAgainBtn, #prestigeBtn {
             background: #007bff;
@@ -136,16 +133,14 @@
         <div id="feedback"></div>
         <div id="scoreCounter"></div>
         <button id="submitBtn" style="display: none;">Submit Answer</button>
-        <button id="nextBtn" style="display: none;">Next Question</button>
     </div>
     <div id="results"></div>
 </div>
 
 <script>
-// Question Banks
-const questionBanks = [
-    // First Set of Questions
-    
+document.addEventListener('DOMContentLoaded', function () {
+    // Question Banks
+    const questionBanks = [
     [
         { question: "The price of a jacket is $120. If a 25% discount is applied, what is the new price?", skill: "CPD", answer: 90 },
         { question: "Out of 400 students in a school, 35% are in Year 9. How many students are in Year 9?", skill: "CPV", answer: 140 },
@@ -171,7 +166,7 @@ const questionBanks = [
         { question: "A shop sells 300 shirts, and 90 are blue. What percentage are blue?", skill: "CPP", answer: 30 },
         { question: "A house costs $400,000. If the price increases by 5%, what is the new price?", skill: "CPI", answer: 420000 },
         { question: "A school has 1,000 students, and 250 are in Year 7. What percentage are not in Year 7?", skill: "CPP", answer: 75 },
-        { question: "A student scored 18 marks out of 20 in one test and 45 out of 50 in another. Which test had the higher percentage score?", skill: "CPP", answer: "Both tests are equal at 90%" },
+        { question: "A student scored 18 marks out of 20 on Test 1 and 43 out of 50 in Test 2. Which test (1 or 2) had the higher percentage score?", skill: "CPP", answer: 1 },
         { question: "The price of a pair of shoes is $200, but a discount of 15% is applied. What is the discounted price?", skill: "CPD", answer: 170 },
         { question: "A fruit basket contains 60% apples, 30% bananas, and 10% oranges. If there are 300 fruits, how many are bananas?", skill: "CPV", answer: 90 },
         { question: "A train travels 90 km, which is 45% of its total journey. How long is the entire journey?", skill: "CWT", answer: 200 },
@@ -179,8 +174,8 @@ const questionBanks = [
         { question: "A class has 25 students, and 20 are present today. What percentage are absent?", skill: "CPP", answer: 20 },
         { question: "A shop sells a product for $150 after a 20% discount. What was the original price?", skill: "CWD", answer: 187.5 },
         { question: "A team wins 18 matches out of 25. What percentage of matches did they lose?", skill: "CPP", answer: 28 }
-    ],
-    [
+    ]
+         [
         { question: "A television is priced at $1,000, but a 12% discount is offered. What is the final price?", skill: "CPD", answer: 880 },
         { question: "A class of 40 students has 75% attendance. How many students are present?", skill: "CPV", answer: 30 },
         { question: "A farmer has 500 kg of grain, and 20% is spoiled. How much grain is usable?", skill: "CPV", answer: 400 },
@@ -208,257 +203,245 @@ const questionBanks = [
         { question: "A shop sells 240 items in a day, and 60% are electronics. How many items are not electronics?", skill: "CPV", answer: 96 },
         { question: "A test has 120 marks, and a student scores 72 marks. What percentage did they score?", skill: "CPP", answer: 60 },
         { question: "A population increased from 500,000 to 525,000. What is the percentage increase?", skill: "CPI", answer: 5 },
-        { question: "A bottle contains 1.2 litres of juice. If 25% is consumed, how much juice is left?", skill: "CPV", answer: 0.9 },
+        { question: "A bottle contains 1200 ml of juice. If 25% is consumed, how many ml of juice are left?", skill: "CPV", answer: 900 },
         { question: "A class has 40 students, and 32 passed an exam. What percentage failed?", skill: "CPP", answer: 20 },
         { question: "A recipe requires 200 grams of sugar, which is 20% of the total weight. What is the total weight?", skill: "CWT", answer: 1000 },
         { question: "A bike was sold for $800 after a 20% discount. What was the original price?", skill: "CWD", answer: 1000 },
         { question: "A team won 9 matches out of 12 in a season. What percentage did they lose?", skill: "CPP", answer: 25 }
-    ]
-]
+    ],
+    [
+    { question: "A restaurant bill is $75, and a 20% tip is added. How much is the total bill?", skill: "CPD", answer: 90 },
+    { question: "Out of 1,500 voters, 60% voted in favour of a proposal. How many voted in favour?", skill: "CPV", answer: 900 },
+    { question: "A student scored 45 marks out of 60 in a test. What percentage did they score?", skill: "CPP", answer: 75 },
+    { question: "A water tank holds 800 litres, but only 50% is full. How man litres of water are in the tank?", skill: "CPV", answer: 400 },
+    { question: "A product was $200 and is now $160. What percentage discount was given?", skill: "CPD%", answer: 20 },
+    { question: "A worker earns $500 per week, and their earnings increase by 10%. What is the new weekly wage?", skill: "CPI", answer: 550 },
+    { question: "A car travels 200 km, which is 40% of its total journey. How long is the total journey?", skill: "CWT", answer: 500 },
+    { question: "A class of 40 students has 32 students present. What percentage are absent?", skill: "CPP", answer: 20 },
+    { question: "A house is worth $300,000 and its value increases by 12%. What is the new value of the house?", skill: "CPI", answer: 336000 },
+    { question: "A $50 shirt is sold at a 25% discount. What is the discounted price?", skill: "CPD", answer: 37.5 },
+    { question: "A factory produced 1,000 items, and 20% were defective. How many items were not defective?", skill: "CPV", answer: 800 },
+    { question: "A player scored 24 goals out of 30 shots. What percentage of their shots were successful?", skill: "CPP", answer: 80 },
+    { question: "The population of a town increased from 40,000 to 50,000. What is the percentage increase?", skill: "CPI", answer: 25 },
+    { question: "A person earns $3,000 a month and spends 40% on rent. How much money is left after paying rent?", skill: "CPV", answer: 1800 },
+    { question: "A recipe requires 250 grams of flour, which is 50% of the total weight of dry ingredients. What is the total weight of dry ingredients?", skill: "CWT", answer: 500 }
+]  
 ];
 
-let currentBankIndex = 0;
-let currentQuestionIndex = 0;
-let studentName = '';
-let prestigeLevel = 1;
-let score = 0; // Added score variable
+    let currentBankIndex = 0;
+    let currentQuestionIndex = 0;
+    let studentName = '';
+    let prestigeLevel = 1;
+    let score = 0; // Added score variable
 
-const nameContainer = document.getElementById('nameContainer');
-const questionContainer = document.getElementById('questionContainer');
-const submitBtn = document.getElementById('submitBtn');
-const nextBtn = document.getElementById('nextBtn');
-const resultsDiv = document.getElementById('results');
-const startBtn = document.getElementById('startBtn');
-const scoreCounter = document.getElementById('scoreCounter');
-const feedbackDiv = document.getElementById('feedback');
+    const nameContainer = document.getElementById('nameContainer');
+    const questionContainer = document.getElementById('questionContainer');
+    const submitBtn = document.getElementById('submitBtn');
+    const resultsDiv = document.getElementById('results');
+    const startBtn = document.getElementById('startBtn');
+    const scoreCounter = document.getElementById('scoreCounter');
+    const feedbackDiv = document.getElementById('feedback');
 
-const incorrectSkills = new Set();
-const skillLegend = {
-    'CPD': 'Calculate Price After Discount',
-    'CPI': 'Calculate Percentage Increase',
-    'CPP': 'Calculate Percentage of a Part',
-    'CPV': 'Calculate Value from Percentage',
-    'CWT': 'Calculate the Whole Total',
-    'CPD%': 'Calculate the Percentage Discount',
-    'CWD': 'Calculate Whole from Discounted Price'
-};
+    const incorrectSkills = new Set();
+    const skillLegend = {
+        'CPD': 'Calculate Price After Discount',
+        'CPI': 'Calculate Percentage Increase',
+        'CPP': 'Calculate Percentage of a Part',
+        'CPV': 'Calculate Value from Percentage',
+        'CWT': 'Calculate the Whole Total',
+        'CPD%': 'Calculate the Percentage Discount',
+        'CWD': 'Calculate Whole from Discounted Price'
+    };
 
-// Start Button Event Listener
-startBtn.addEventListener('click', () => {
-    studentName = document.getElementById('studentName').value.trim();
-    if (studentName !== '') {
-        nameContainer.style.display = 'none';
-        questionContainer.style.display = 'block';
-        submitBtn.style.display = 'block';
-        scoreCounter.style.display = 'block';
-        feedbackDiv.style.display = 'none';
-        score = 0; // Reset score
-        updateScore();
-        displayQuestion();
-    } else {
-        alert('Please enter your name to start the assessment.');
-    }
-});
-
-// Allow Enter Key to Start
-document.getElementById('studentName').addEventListener('keyup', function(event) {
-    if (event.key === 'Enter') {
-        startBtn.click();
-    }
-});
-
-// Display Question Function
-function displayQuestion() {
-    questionContainer.innerHTML = '';
-    feedbackDiv.innerHTML = '';
-    feedbackDiv.style.display = 'none';
-    const currentBank = questionBanks[currentBankIndex];
-    const q = currentBank[currentQuestionIndex];
-    const questionDiv = document.createElement('div');
-    questionDiv.classList.add('question');
-    questionDiv.innerHTML = `
-        <h3>Question ${currentQuestionIndex + 1}</h3>
-        <p>${q.question}</p>
-        <input type="number" step="any" id="answer" placeholder="Enter your answer">
-    `;
-    questionContainer.appendChild(questionDiv);
-
-    // Focus on the answer input
-    document.getElementById('answer').focus();
-
-    // Allow Enter Key to Submit Answer
-    document.getElementById('answer').addEventListener('keyup', function(event) {
-        if (event.key === 'Enter') {
-            submitBtn.click();
+    // Start Button Event Listener
+    startBtn.addEventListener('click', () => {
+        studentName = document.getElementById('studentName').value.trim();
+        if (studentName !== '') {
+            nameContainer.style.display = 'none';
+            questionContainer.style.display = 'block';
+            submitBtn.style.display = 'block';
+            scoreCounter.style.display = 'block';
+            feedbackDiv.style.display = 'none';
+            score = 0; // Reset score
+            updateScore();
+            displayQuestion();
+        } else {
+            alert('Please enter your name to start the assessment.');
         }
     });
-}
 
-// Update Score Function
-function updateScore() {
-    scoreCounter.innerHTML = `Score: ${score} / ${questionBanks[currentBankIndex].length}`;
-}
-
-// Check Answer Function
-function checkAnswer() {
-    const currentBank = questionBanks[currentBankIndex];
-    const q = currentBank[currentQuestionIndex];
-    const answerInput = document.getElementById('answer');
-    const userAnswer = parseFloat(answerInput.value);
-    const correctAnswer = parseFloat(q.answer);
-    feedbackDiv.style.display = 'block';
-
-    if (isNaN(userAnswer)) {
-        alert('Please enter a valid number.');
-        return;
-    }
-
-    if (Math.abs(userAnswer - correctAnswer) < 0.01) {
-        score++;
-        feedbackDiv.innerHTML = `<p style="color: green;">Correct!</p>`;
-    } else {
-        incorrectSkills.add(q.skill);
-        feedbackDiv.innerHTML = `<p style="color: red;">Incorrect. The correct answer was ${correctAnswer}. Remember, you're performing a specific skill: ${skillLegend[q.skill]}</p>`;
-    }
-
-    updateScore();
-    submitBtn.style.display = 'none';
-
-    if (currentQuestionIndex < currentBank.length - 1) {
-        nextBtn.style.display = 'block';
-        // Allow Enter Key to Move to Next Question
-        document.addEventListener('keyup', nextQuestionEnter);
-    } else {
-        // Last question, show results after a brief delay
-        setTimeout(showResults, 1000);
-    }
-}
-
-// Next Question Function
-function nextQuestion() {
-    currentQuestionIndex++;
-    feedbackDiv.style.display = 'none';
-    if (currentQuestionIndex < questionBanks[currentBankIndex].length) {
-        submitBtn.style.display = 'block';
-        nextBtn.style.display = 'none';
-        displayQuestion();
-        // Remove Enter Key Listener for Next Button
-        document.removeEventListener('keyup', nextQuestionEnter);
-    }
-}
-
-// Event Listener Function for Enter Key on Next Button
-function nextQuestionEnter(event) {
-    if (event.key === 'Enter') {
-        nextBtn.click();
-    }
-}
-
-// Show Results Function
-function showResults() {
-    let allCorrect = incorrectSkills.size === 0;
-    resultsDiv.innerHTML = '';
-    questionContainer.style.display = 'none';
-    submitBtn.style.display = 'none';
-    nextBtn.style.display = 'none';
-    feedbackDiv.style.display = 'none';
-    scoreCounter.style.display = 'none';
-
-    if (allCorrect) {
-        if (prestigeLevel < 5) {
-            resultsDiv.innerHTML = `
-                <div class="badge-container level-${prestigeLevel}">
-                    <h2>🎉 Congratulations, ${studentName}!</h2>
-                    <p>You've earned ${studentName}'s Percentage Pro Badge</p>
-                    <p>Prestige Level ${prestigeLevel}</p>
-                    <button id="prestigeBtn">Prestige to Level ${prestigeLevel + 1}</button>
-                </div>
-            `;
-            const prestigeBtn = document.getElementById('prestigeBtn');
-            prestigeBtn.addEventListener('click', prestige);
-
-            // Allow Enter Key to Prestige
-            document.addEventListener('keyup', function prestigeEnter(event) {
-                if (event.key === 'Enter') {
-                    prestigeBtn.click();
-                    document.removeEventListener('keyup', prestigeEnter);
-                }
-            });
-        } else {
-            resultsDiv.innerHTML = `
-                <div class="badge-container level-${prestigeLevel}">
-                    <h2>🎉 Congratulations, ${studentName}!</h2>
-                    <p>You've achieved ${studentName}'s Maximum Prestige Level 5 Badge!</p>
-                </div>
-            `;
+    // Allow Enter Key to Start
+    document.getElementById('studentName').addEventListener('keyup', function(event) {
+        if (event.key === 'Enter') {
+            startBtn.click();
         }
-    } else {
-        let skillMessages = '';
-        incorrectSkills.forEach(skill => {
-            skillMessages += `<li>${skillLegend[skill]}</li>`;
-        });
-        resultsDiv.innerHTML = `
-            <h2>${studentName}, you missed some questions.</h2>
-            <p>Please review the following skills:</p>
-            <div class="skill-list">
-                <ul>${skillMessages}</ul>
-            </div>
-            <button id="playAgainBtn">Play Again</button>
-        `;
-        const playAgainBtn = document.getElementById('playAgainBtn');
-        playAgainBtn.addEventListener('click', playAgain);
+    });
 
-        // Allow Enter Key to Play Again
-        document.addEventListener('keyup', function playAgainEnter(event) {
+    // Display Question Function
+    function displayQuestion() {
+        questionContainer.innerHTML = '';
+        feedbackDiv.innerHTML = '';
+        feedbackDiv.style.display = 'none';
+        const currentBank = questionBanks[currentBankIndex];
+        const q = currentBank[currentQuestionIndex];
+        const questionDiv = document.createElement('div');
+        questionDiv.classList.add('question');
+        questionDiv.innerHTML = `
+            <h3>Question ${currentQuestionIndex + 1}</h3>
+            <p>${q.question}</p>
+            <input type="number" step="any" id="answer" placeholder="Enter your answer">
+        `;
+        questionContainer.appendChild(questionDiv);
+
+        // Focus on the answer input
+        document.getElementById('answer').focus();
+
+        // Allow Enter Key to Submit Answer
+        document.getElementById('answer').addEventListener('keyup', function(event) {
             if (event.key === 'Enter') {
-                playAgainBtn.click();
-                document.removeEventListener('keyup', playAgainEnter);
+                checkAnswer();
             }
         });
     }
-}
 
-// Prestige Function
-function prestige() {
-    prestigeLevel++;
-    currentQuestionIndex = 0;
-    incorrectSkills.clear();
-    resultsDiv.innerHTML = '';
-    questionContainer.style.display = 'block';
-    submitBtn.style.display = 'block';
-    scoreCounter.style.display = 'block';
-    score = 0; // Reset score
-    updateScore();
-    displayQuestion();
-}
+    // Update Score Function
+    function updateScore() {
+        scoreCounter.innerHTML = `Score: ${score} / ${questionBanks[currentBankIndex].length}`;
+    }
 
-// Play Again Function
-function playAgain() {
-    resultsDiv.innerHTML = '';
-    currentQuestionIndex = 0;
-    incorrectSkills.clear();
-    prestigeLevel = 1;
-    currentBankIndex = (currentBankIndex + 1) % questionBanks.length;
-    questionContainer.style.display = 'block';
-    submitBtn.style.display = 'block';
-    scoreCounter.style.display = 'block';
-    score = 0; // Reset score
-    updateScore();
-    displayQuestion();
-}
+    // Check Answer Function
+    function checkAnswer() {
+        const currentBank = questionBanks[currentBankIndex];
+        const q = currentBank[currentQuestionIndex];
+        const answerInput = document.getElementById('answer');
+        const userAnswer = parseFloat(answerInput.value);
+        const correctAnswer = parseFloat(q.answer);
+        feedbackDiv.style.display = 'block';
 
-// Submit and Next Button Event Listeners
-submitBtn.addEventListener('click', checkAnswer);
-nextBtn.addEventListener('click', nextQuestion);
-
-// Allow Enter Key to Submit or Move to Next Question
-document.addEventListener('keyup', function(event) {
-    if (event.key === 'Enter') {
-        if (submitBtn.style.display === 'block') {
-            submitBtn.click();
-        } else if (nextBtn.style.display === 'block') {
-            nextBtn.click();
+        if (isNaN(userAnswer)) {
+            alert('Please enter a valid number.');
+            return;
         }
+
+        if (Math.abs(userAnswer - correctAnswer) < 0.01) {
+            score++;
+            feedbackDiv.innerHTML = `<p style="color: green;">Correct!</p>`;
+        } else {
+            incorrectSkills.add(q.skill);
+            feedbackDiv.innerHTML = `<p style="color: red;">Incorrect. The correct answer was ${correctAnswer}. Remember, you're performing a specific skill: ${skillLegend[q.skill]}</p>`;
+        }
+
+        updateScore();
+
+        if (currentQuestionIndex < currentBank.length - 1) {
+            currentQuestionIndex++;
+            setTimeout(displayQuestion, 1000); // Automatically move to the next question after a delay
+        } else {
+            setTimeout(showResults, 1000);
+        }
+    }
+
+    // Submit Button Event Listener
+    submitBtn.addEventListener('click', () => {
+        checkAnswer();
+    });
+
+    // Show Results Function
+    function showResults() {
+        let allCorrect = incorrectSkills.size === 0;
+        resultsDiv.innerHTML = '';
+        questionContainer.style.display = 'none';
+        submitBtn.style.display = 'none';
+        feedbackDiv.style.display = 'none';
+        scoreCounter.style.display = 'none';
+
+        if (allCorrect) {
+            if (prestigeLevel < 5) {
+                resultsDiv.innerHTML = `
+                  <div class="badge-container level-${prestigeLevel}">
+                 <h2>🎉 Congratulations, ${studentName}! You've earned ${studentName}'s Percentage Pro Badge - Prestige Level ${prestigeLevel}!</h2>
+                <p>You achieved a 10-question winning streak!</p>
+                </div>
+
+     <button id="prestigeBtn">Prestige to Level ${prestigeLevel + 1}</button>
+                `;
+                const prestigeBtn = document.getElementById('prestigeBtn');
+                prestigeBtn.addEventListener('click', prestige);
+            } else {
+                resultsDiv.innerHTML = `
+                    <div class="badge-container level-5">
+                        <h2>🎉 Congratulations, ${studentName}! You've achieved ${studentName}'s Maximum Prestige Level 5 Badge!</h2>
+                    </div>
+                `;
+            }
+        } else {
+            let skillMessages = '';
+            incorrectSkills.forEach(skill => {
+                skillMessages += `<li>${skillLegend[skill]}</li>`;
+            });
+            resultsDiv.innerHTML = `
+                <h2>${studentName}, you missed some questions.</h2>
+                <p>Please review the following skills:</p>
+                <div class="skill-list">
+                    <ul>${skillMessages}</ul>
+                </div>
+                <button id="playAgainBtn">Retry Set</button>
+            `;
+            const playAgainBtn = document.getElementById('playAgainBtn');
+            playAgainBtn.addEventListener('click', retrySet);
+        }
+                resultsDiv.innerHTML = `
+                    <div class="badge-container level-5">
+                        <h2>🎉 Congratulations, ${studentName}! You've achieved ${studentName}'s Maximum Prestige Level 5 Badge!</h2>
+                    </div>
+                `;
+            }
+        } else {
+            let skillMessages = '';
+            incorrectSkills.forEach(skill => {
+                skillMessages += `<li>${skillLegend[skill]}</li>`;
+            });
+            resultsDiv.innerHTML = `
+                <h2>${studentName}, you missed some questions.</h2>
+                <p>Please review the following skills:</p>
+                <div class="skill-list">
+                    <ul>${skillMessages}</ul>
+                </div>
+                <button id="playAgainBtn">Play Again</button>
+            `;
+            const playAgainBtn = document.getElementById('playAgainBtn');
+            playAgainBtn.addEventListener('click', playAgain);
+        }
+    }
+
+    // Prestige Function
+    function prestige() {
+        prestigeLevel++;
+        currentQuestionIndex = 0;
+        incorrectSkills.clear();
+        currentBankIndex = (currentBankIndex + 1) % questionBanks.length;
+        resultsDiv.innerHTML = '';
+        questionContainer.style.display = 'block';
+        submitBtn.style.display = 'block';
+        scoreCounter.style.display = 'block';
+        score = 0; // Reset score
+        updateScore();
+        displayQuestion();
+    }
+    }
+
+    // Play Again Function
+    function retrySet() {
+        resultsDiv.innerHTML = '';
+        currentQuestionIndex = 0;
+        incorrectSkills.clear();
+        questionContainer.style.display = 'block';
+        submitBtn.style.display = 'block';
+        scoreCounter.style.display = 'block';
+        score = 0; // Reset score
+        updateScore();
+        displayQuestion();
+    }
     }
 });
 </script>
